@@ -96,9 +96,10 @@ const MyCoupon = () => {
           <p>
             <strong>Status:</strong> {coupon.bookingStatus}
           </p>
+{/*           
 <p className="break-all">
   <strong>QR Token:</strong> {coupon.qrToken}
-</p>
+</p> */}
 
 
         </div>
