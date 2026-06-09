@@ -23,10 +23,8 @@ const Navbar = () => {
 
   const getDashboardPath = () => {
     if (!user) return "/login";
-
     if (user.role === "admin") return "/admin/dashboard";
     if (user.role === "manager") return "/manager/dashboard";
-
     return "/student/dashboard";
   };
 
@@ -40,29 +38,27 @@ const Navbar = () => {
   return (
     <header className="sticky top-0 z-50 bg-gradient-to-r from-blue-700 via-blue-600 to-indigo-700 shadow-lg">
       <nav className="max-w-[1440px] mx-auto px-5 md:px-8 py-4 flex justify-between items-center">
-       
-<Link to="/" className="flex items-center gap-4 text-white">
-  <div className="flex items-center gap-3">
-    <div className="w-14 h-14 rounded-2xl bg-white/15 border border-white/25 flex items-center justify-center shadow-sm">
-      <FiCoffee className="text-3xl" />
-    </div>
+        {/* Logo sequence: LNMIIT → Cup → MessMate */}
+        <Link to="/" className="flex items-center gap-4 text-white">
+          <img
+            src={lnmiitLogo}
+            alt="LNMIIT Logo"
+            className="w-20 h-20 md:w-24 md:h-24 object-contain bg-white rounded-2xl border border-white/40 p-2 shadow-md"
+          />
 
-    <img
-      src={lnmiitLogo}
-      alt="LNMIIT Logo"
-      className="w-14 h-14 object-contain bg-white rounded-2xl border border-white/30 p-1.5 shadow-sm"
-    />
-  </div>
+          <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-white/15 border border-white/25 flex items-center justify-center shadow-sm">
+            <FiCoffee className="text-3xl md:text-4xl" />
+          </div>
 
-  <div>
-    <h1 className="text-2xl font-extrabold leading-none">MessMate</h1>
-    <p className="text-sm text-blue-100 hidden sm:block">
-      Smart meals. Happy hostel life.
-    </p>
-  </div>
-</Link>
-
-
+          <div>
+            <h1 className="text-2xl md:text-3xl font-extrabold leading-none">
+              MessMate
+            </h1>
+            <p className="text-sm text-blue-100 hidden sm:block">
+              Smart meals. Happy hostel life.
+            </p>
+          </div>
+        </Link>
 
         <button
           onClick={() => setOpen(!open)}

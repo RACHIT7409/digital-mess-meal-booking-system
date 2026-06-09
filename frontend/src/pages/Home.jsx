@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   FiArrowRight,
@@ -6,7 +7,7 @@ import {
   FiPhone,
   FiUser,
   FiMapPin,
-  FiChevronDown,
+  FiX,
 } from "react-icons/fi";
 
 import developerImage from "../assets/developer.jpg";
@@ -16,21 +17,12 @@ import snacksImg from "../assets/food-snacks.jpg";
 import dinnerImg from "../assets/food-dinner.jpg";
 
 const Home = () => {
-  const scrollToDeveloper = () => {
-    const section = document.getElementById("developer-section");
-
-    if (section) {
-      section.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }
-  };
+  const [showDeveloper, setShowDeveloper] = useState(false);
 
   return (
     <main className="overflow-hidden">
       {/* HERO SECTION */}
-      <section className="page-container min-h-[calc(100vh-90px)] flex items-center">
+      <section className="page-container min-h-[calc(100vh-120px)] flex items-center">
         <div className="grid lg:grid-cols-2 gap-12 items-center w-full">
           {/* LEFT CONTENT */}
           <div className="fade-in">
@@ -65,14 +57,6 @@ const Home = () => {
                 Login
                 <FiArrowRight />
               </Link>
-
-              <button
-                onClick={scrollToDeveloper}
-                className="bg-white text-blue-700 border border-blue-200 px-5 py-3 rounded-xl font-extrabold shadow-sm hover:shadow-md hover:bg-blue-50 transition flex items-center gap-2"
-              >
-                Developer
-                <FiChevronDown />
-              </button>
             </div>
 
             <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-2xl">
@@ -184,185 +168,135 @@ const Home = () => {
           </div>
 
           <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-5">
-            <div className="group rounded-3xl overflow-hidden bg-slate-50 border border-slate-200 shadow-sm hover:shadow-xl transition">
-              <img
-                src={breakfastImg}
-                alt="Breakfast"
-                className="w-full h-56 object-cover group-hover:scale-105 transition duration-300"
-              />
+            <MealCard
+              image={breakfastImg}
+              title="Breakfast"
+              price="₹25"
+              text="Start your day with a booked breakfast coupon."
+            />
 
-              <div className="p-5">
-                <div className="flex items-center justify-between gap-3">
-                  <h3 className="text-xl font-extrabold text-slate-900">
-                    Breakfast
-                  </h3>
-                  <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full font-extrabold text-sm">
-                    ₹25
-                  </span>
-                </div>
+            <MealCard
+              image={lunchImg}
+              title="Lunch"
+              price="₹60"
+              text="Avoid crowd and book your lunch in advance."
+            />
 
-                <p className="text-slate-500 mt-2">
-                  Start your day with a booked breakfast coupon.
-                </p>
-              </div>
-            </div>
+            <MealCard
+              image={snacksImg}
+              title="Snacks"
+              price="₹25"
+              text="Book evening snacks without waiting for paper coupons."
+            />
 
-            <div className="group rounded-3xl overflow-hidden bg-slate-50 border border-slate-200 shadow-sm hover:shadow-xl transition">
-              <img
-                src={lunchImg}
-                alt="Lunch"
-                className="w-full h-56 object-cover group-hover:scale-105 transition duration-300"
-              />
-
-              <div className="p-5">
-                <div className="flex items-center justify-between gap-3">
-                  <h3 className="text-xl font-extrabold text-slate-900">
-                    Lunch
-                  </h3>
-                  <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full font-extrabold text-sm">
-                    ₹60
-                  </span>
-                </div>
-
-                <p className="text-slate-500 mt-2">
-                  Avoid crowd and book your lunch in advance.
-                </p>
-              </div>
-            </div>
-
-            <div className="group rounded-3xl overflow-hidden bg-slate-50 border border-slate-200 shadow-sm hover:shadow-xl transition">
-              <img
-                src={snacksImg}
-                alt="Snacks"
-                className="w-full h-56 object-cover group-hover:scale-105 transition duration-300"
-              />
-
-              <div className="p-5">
-                <div className="flex items-center justify-between gap-3">
-                  <h3 className="text-xl font-extrabold text-slate-900">
-                    Snacks
-                  </h3>
-                  <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full font-extrabold text-sm">
-                    ₹25
-                  </span>
-                </div>
-
-                <p className="text-slate-500 mt-2">
-                  Book evening snacks without waiting for paper coupons.
-                </p>
-              </div>
-            </div>
-
-            <div className="group rounded-3xl overflow-hidden bg-slate-50 border border-slate-200 shadow-sm hover:shadow-xl transition">
-              <img
-                src={dinnerImg}
-                alt="Dinner"
-                className="w-full h-56 object-cover group-hover:scale-105 transition duration-300"
-              />
-
-              <div className="p-5">
-                <div className="flex items-center justify-between gap-3">
-                  <h3 className="text-xl font-extrabold text-slate-900">
-                    Dinner
-                  </h3>
-                  <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full font-extrabold text-sm">
-                    ₹60
-                  </span>
-                </div>
-
-                <p className="text-slate-500 mt-2">
-                  Book your dinner coupon and verify at mess entry.
-                </p>
-              </div>
-            </div>
+            <MealCard
+              image={dinnerImg}
+              title="Dinner"
+              price="₹60"
+              text="Book your dinner coupon and verify at mess entry."
+            />
           </div>
         </div>
       </section>
 
-      {/* DEVELOPER SECTION */}
-      <section id="developer-section" className="page-container">
-        <div className="bg-white rounded-[30px] border border-slate-200 shadow-lg p-6 md:p-9">
-          <div className="grid lg:grid-cols-[360px_1fr] gap-10 items-center">
-            <div className="text-center lg:text-left">
-              <img
-                src={developerImage}
-                alt="Developer"
-                className="w-56 h-56 rounded-[32px] object-cover mx-auto lg:mx-0 border border-slate-200 shadow-xl"
-              />
-            </div>
+      {/* DEVELOPER BUTTON ONLY */}
+      <section className="page-container">
+        <div className="bg-white rounded-[30px] border border-slate-200 shadow-lg p-8 text-center">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900">
+            Project Information
+          </h2>
 
-            <div>
-              <p className="text-blue-700 font-extrabold mb-2">
-                Developer Details
-              </p>
+          <p className="text-slate-500 mt-2">
+            Click below to view developer details.
+          </p>
 
-              <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900">
-                RACHIT CHAWLA
-              </h2>
+          <button
+            onClick={() => setShowDeveloper(true)}
+            className="btn-primary mt-6 inline-flex items-center gap-2"
+          >
+            <FiUser />
+            Developer Details
+          </button>
+        </div>
+      </section>
 
-              <p className="text-slate-500 mt-2">
-                Student Developer, LNMIIT Jaipur
-              </p>
+      {/* DEVELOPER MODAL */}
+      {showDeveloper && (
+        <div className="fixed inset-0 z-[999] bg-slate-900/70 backdrop-blur-sm flex items-center justify-center px-4 py-6">
+          <div className="bg-white rounded-[30px] border border-slate-200 shadow-2xl p-6 md:p-8 max-w-5xl w-full relative fade-in max-h-[90vh] overflow-y-auto">
+            <button
+              onClick={() => setShowDeveloper(false)}
+              className="absolute top-5 right-5 w-10 h-10 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center hover:bg-red-50 hover:text-red-600 transition"
+            >
+              <FiX />
+            </button>
 
-              <div className="grid md:grid-cols-2 gap-4 mt-7">
-                <div className="bg-slate-50 rounded-2xl p-4">
-                  <p className="text-sm text-slate-500 flex items-center gap-2">
-                    <FiUser />
-                    Roll Number
-                  </p>
-                  <h3 className="font-extrabold mt-1">23UEC598</h3>
+            <div className="grid lg:grid-cols-[380px_1fr] gap-10 items-center">
+              <div className="text-center lg:text-left">
+                <img
+                  src={developerImage}
+                  alt="Developer"
+                  className="w-64 h-64 rounded-[36px] object-cover mx-auto lg:mx-0 border border-slate-200 shadow-xl"
+                />
+              </div>
+
+              <div>
+                <p className="text-blue-700 font-extrabold mb-2">
+                  Developer Details
+                </p>
+
+                <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 pr-10">
+                  RACHIT CHAWLA
+                </h2>
+
+                <p className="text-slate-500 mt-2">
+                  Student Developer, LNMIIT Jaipur
+                </p>
+
+                <div className="grid md:grid-cols-2 gap-4 mt-7">
+                  <InfoBox icon={<FiUser />} label="Roll Number" value="23UEC598" />
+
+                  <InfoBox
+                    icon={<FiMail />}
+                    label="Email"
+                    value="23uec598@lnmiit.ac.in"
+                  />
+
+                  <InfoBox
+                    icon={<FiPhone />}
+                    label="Contact"
+                    value="+91 7409479254"
+                  />
+
+                  <InfoBox
+                    icon={<FiMapPin />}
+                    label="Project"
+                    value="Digital Mess Meal Booking System"
+                  />
                 </div>
 
-                <div className="bg-slate-50 rounded-2xl p-4">
-                  <p className="text-sm text-slate-500 flex items-center gap-2">
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <a
+                    href="mailto:23uec598@lnmiit.ac.in"
+                    className="btn-primary flex items-center gap-2"
+                  >
                     <FiMail />
-                    Email
-                  </p>
-                  <h3 className="font-extrabold mt-1 break-all">
-                    23uec598@lnmiit.ac.in
-                  </h3>
-                </div>
+                    Send Mail
+                  </a>
 
-                <div className="bg-slate-50 rounded-2xl p-4">
-                  <p className="text-sm text-slate-500 flex items-center gap-2">
+                  <a
+                    href="tel:+917409479254"
+                    className="btn-dark flex items-center gap-2"
+                  >
                     <FiPhone />
                     Contact
-                  </p>
-                  <h3 className="font-extrabold mt-1">+91 7409479254</h3>
+                  </a>
                 </div>
-
-                <div className="bg-slate-50 rounded-2xl p-4">
-                  <p className="text-sm text-slate-500 flex items-center gap-2">
-                    <FiMapPin />
-                    Project
-                  </p>
-                  <h3 className="font-extrabold mt-1">
-                    Digital Mess Meal Booking System
-                  </h3>
-                </div>
-              </div>
-
-              <div className="mt-6 flex flex-wrap gap-3">
-                <a
-                  href="mailto:23uec598@lnmiit.ac.in"
-                  className="btn-primary flex items-center gap-2"
-                >
-                  <FiMail />
-                  Send Mail
-                </a>
-
-                <a
-                  href="tel:+917409479254"
-                  className="btn-dark flex items-center gap-2"
-                >
-                  <FiPhone />
-                  Contact
-                </a>
               </div>
             </div>
           </div>
         </div>
-      </section>
+      )}
 
       {/* FOOTER */}
       <footer className="bg-slate-900 text-white mt-10">
@@ -381,14 +315,16 @@ const Home = () => {
                 <Link to="/login" className="hover:text-white transition">
                   Login
                 </Link>
+
                 <Link to="/register" className="hover:text-white transition">
                   Student Register
                 </Link>
+
                 <button
-                  onClick={scrollToDeveloper}
+                  onClick={() => setShowDeveloper(true)}
                   className="text-left hover:text-white transition"
                 >
-                  Developer
+                  Developer Details
                 </button>
               </div>
             </div>
@@ -400,10 +336,12 @@ const Home = () => {
                   <FiMail />
                   23uec598@lnmiit.ac.in
                 </p>
+
                 <p className="flex items-center gap-2">
                   <FiPhone />
                   +91 7409479254
                 </p>
+
                 <p className="flex items-center gap-2">
                   <FiMapPin />
                   LNMIIT Jaipur
@@ -424,6 +362,43 @@ const Home = () => {
         </div>
       </footer>
     </main>
+  );
+};
+
+const MealCard = ({ image, title, price, text }) => {
+  return (
+    <div className="group rounded-3xl overflow-hidden bg-slate-50 border border-slate-200 shadow-sm hover:shadow-xl transition">
+      <img
+        src={image}
+        alt={title}
+        className="w-full h-56 object-cover group-hover:scale-105 transition duration-300"
+      />
+
+      <div className="p-5">
+        <div className="flex items-center justify-between gap-3">
+          <h3 className="text-xl font-extrabold text-slate-900">{title}</h3>
+
+          <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full font-extrabold text-sm">
+            {price}
+          </span>
+        </div>
+
+        <p className="text-slate-500 mt-2">{text}</p>
+      </div>
+    </div>
+  );
+};
+
+const InfoBox = ({ icon, label, value }) => {
+  return (
+    <div className="bg-slate-50 rounded-2xl p-4">
+      <p className="text-sm text-slate-500 flex items-center gap-2">
+        {icon}
+        {label}
+      </p>
+
+      <h3 className="font-extrabold mt-1 break-all">{value}</h3>
+    </div>
   );
 };
 
