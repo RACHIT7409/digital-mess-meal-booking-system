@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FiArrowLeft, FiCalendar, FiClock, FiCoffee } from "react-icons/fi";
 import API from "../api/api";
+import PageHeader from "../components/PageHeader";
 
 const AvailableMeals = () => {
   const navigate = useNavigate();
 
   const [meals, setMeals] = useState([]);
   const [selectedDates, setSelectedDates] = useState({});
-  const [loading, setLoading] = useState(false);
+  const [loadingMealId, setLoadingMealId] = useState(null);
   const [pageLoading, setPageLoading] = useState(true);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -50,7 +52,7 @@ const AvailableMeals = () => {
 
     setError("");
     setSuccess("");
-    setLoading(true);
+    setLoadingMealId(mealId);
 
     try {
       await API.post("/bookings", {
@@ -58,76 +60,89 @@ const AvailableMeals = () => {
         mealDate,
       });
 
-      setSuccess("Booking created successfully. Please complete payment.");
+      setSuccess("Meal booked successfully. Please complete payment.");
       setTimeout(() => {
         navigate("/student/bookings");
       }, 800);
     } catch (err) {
       setError(err.response?.data?.message || "Booking failed");
     } finally {
-      setLoading(false);
+      setLoadingMealId(null);
     }
   };
 
   if (pageLoading) {
     return (
-      <div className="p-6">
-        <p>Loading available meals...</p>
-      </div>
+      <main className="page-container">
+        <div className="glass-card p-6">Loading available meals...</div>
+      </main>
     );
   }
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-blue-700">
-          Available Meals
-        </h1>
-
-        <button
-          onClick={() => navigate("/student/dashboard")}
-          className="bg-gray-700 text-white px-4 py-2 rounded"
-        >
-          Back
-        </button>
-      </div>
+    <main className="page-container">
+      <PageHeader
+        title="Available Meals"
+        subtitle="Choose a meal, select date, and book your coupon securely."
+        rightContent={
+          <button onClick={() => navigate("/student/dashboard")} className="btn-dark flex items-center gap-2">
+            <FiArrowLeft />
+            Back
+          </button>
+        }
+      />
 
       {error && (
-        <p className="bg-red-100 text-red-700 p-3 rounded mb-4">
+        <p className="bg-red-50 text-red-700 border border-red-200 p-3 rounded-xl mb-4">
           {error}
         </p>
       )}
 
       {success && (
-        <p className="bg-green-100 text-green-700 p-3 rounded mb-4">
+        <p className="bg-green-50 text-green-700 border border-green-200 p-3 rounded-xl mb-4">
           {success}
         </p>
       )}
 
       {meals.length === 0 ? (
-        <div className="bg-white shadow rounded p-6">
-          <p>No meals available right now.</p>
+        <div className="glass-card p-8 text-center">
+          <FiCoffee className="mx-auto text-4xl text-blue-700 mb-3" />
+          <h2 className="text-xl font-extrabold">No meals available</h2>
+          <p className="text-slate-500 mt-2">
+            Please check again later or contact mess manager.
+          </p>
         </div>
       ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-5">
           {meals.map((meal) => (
-            <div key={meal._id} className="bg-white shadow rounded p-5">
-              <h2 className="text-xl font-bold mb-2">{meal.mealName}</h2>
+            <div key={meal._id} className="pro-card p-6 fade-in">
+              <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center text-2xl mb-4">
+                <FiCoffee />
+              </div>
 
-              <p className="text-gray-700 mb-1">
-                Price: <span className="font-semibold">₹{meal.price}</span>
-              </p>
+              <h2 className="text-xl font-extrabold text-slate-900 mb-2">
+                {meal.mealName}
+              </h2>
 
-              <p className="text-gray-700 mb-1">
-                Time: {meal.startTime} - {meal.endTime}
-              </p>
+              <div className="space-y-2 text-sm text-slate-600 mb-5">
+                <p className="flex items-center gap-2">
+                  <span className="font-bold text-slate-900">₹{meal.price}</span>
+                  per meal
+                </p>
 
-              <p className="text-gray-600 text-sm mb-4">
-                {meal.description}
-              </p>
+                <p className="flex items-center gap-2">
+                  <FiClock />
+                  {meal.startTime} - {meal.endTime}
+                </p>
 
-              <label className="block mb-1 font-medium">
-                Select Meal Date
+                {meal.description && (
+                  <p className="text-slate-500">{meal.description}</p>
+                )}
+              </div>
+
+              <label className="block font-bold text-slate-700 mb-2">
+                <FiCalendar className="inline mr-2" />
+                Meal Date
               </label>
 
               <input
@@ -136,21 +151,21 @@ const AvailableMeals = () => {
                 max={maxDate}
                 value={selectedDates[meal._id] || ""}
                 onChange={(e) => handleDateChange(meal._id, e.target.value)}
-                className="w-full border px-3 py-2 rounded mb-4"
+                className="w-full mb-4"
               />
 
               <button
                 onClick={() => handleBookMeal(meal._id)}
-                disabled={loading}
-                className="w-full bg-blue-700 text-white py-2 rounded hover:bg-blue-800 disabled:bg-gray-400"
+                disabled={loadingMealId === meal._id}
+                className="btn-primary w-full"
               >
-                {loading ? "Booking..." : "Book Meal"}
+                {loadingMealId === meal._id ? "Booking..." : "Book Meal"}
               </button>
             </div>
           ))}
         </div>
       )}
-    </div>
+    </main>
   );
 };
 

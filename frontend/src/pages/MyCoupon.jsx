@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { FiArrowLeft, FiCheckCircle, FiCoffee, FiShield } from "react-icons/fi";
 import API from "../api/api";
+import StatusBadge from "../components/StatusBadge";
 
 const MyCoupon = () => {
   const { bookingId } = useParams();
@@ -30,90 +32,104 @@ const MyCoupon = () => {
 
   if (pageLoading) {
     return (
-      <div className="p-6">
-        <p>Loading coupon...</p>
-      </div>
+      <main className="page-container">
+        <div className="glass-card p-6">Loading coupon...</div>
+      </main>
     );
   }
 
   if (error) {
     return (
-      <div className="p-6">
-        <p className="bg-red-100 text-red-700 p-3 rounded mb-4">
+      <main className="page-container">
+        <p className="bg-red-50 text-red-700 border border-red-200 p-3 rounded-xl mb-4">
           {error}
         </p>
 
-        <Link
-          to="/student/bookings"
-          className="bg-blue-700 text-white px-4 py-2 rounded"
-        >
+        <Link to="/student/bookings" className="btn-primary inline-flex items-center gap-2">
+          <FiArrowLeft />
           Back to Bookings
         </Link>
-      </div>
+      </main>
     );
   }
 
   return (
-    <div className="p-6 flex justify-center">
-      <div className="bg-white shadow rounded p-6 max-w-md w-full text-center">
-        <h1 className="text-2xl font-bold text-blue-700 mb-4">
-          Digital Meal Coupon
-        </h1>
+    <main className="page-container">
+      <div className="flex justify-center">
+        <div className="form-card max-w-lg w-full p-6 md:p-8 fade-in">
+          <div className="text-center mb-6">
+            <div className="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white flex items-center justify-center text-2xl shadow-lg mb-4">
+              <FiCoffee />
+            </div>
 
-        <div className="border rounded p-4 mb-4">
-          <img
-            src={coupon.qrCode}
-            alt="Meal QR Coupon"
-            className="mx-auto w-64 h-64"
-          />
+            <h1 className="text-3xl font-extrabold text-blue-700">
+              Digital Meal Coupon
+            </h1>
+
+            <p className="text-slate-500 mt-2">
+              Show this QR code at mess entry. It can be used only once.
+            </p>
+          </div>
+
+          <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 mb-6">
+            <img
+              src={coupon.qrCode}
+              alt="Meal QR Coupon"
+              className="mx-auto w-64 h-64 object-contain"
+            />
+          </div>
+
+          <div className="space-y-3 mb-6">
+            <div className="flex justify-between gap-4 border-b border-slate-100 pb-2">
+              <span className="text-slate-500">Name</span>
+              <strong>{coupon.studentName}</strong>
+            </div>
+
+            <div className="flex justify-between gap-4 border-b border-slate-100 pb-2">
+              <span className="text-slate-500">Roll Number</span>
+              <strong>{coupon.rollNumber}</strong>
+            </div>
+
+            <div className="flex justify-between gap-4 border-b border-slate-100 pb-2">
+              <span className="text-slate-500">Meal</span>
+              <strong>{coupon.mealName}</strong>
+            </div>
+
+            <div className="flex justify-between gap-4 border-b border-slate-100 pb-2">
+              <span className="text-slate-500">Date</span>
+              <strong>{formatDate(coupon.mealDate)}</strong>
+            </div>
+
+            <div className="flex justify-between gap-4 border-b border-slate-100 pb-2">
+              <span className="text-slate-500">Amount</span>
+              <strong>₹{coupon.amount}</strong>
+            </div>
+
+            <div className="flex justify-between gap-4 border-b border-slate-100 pb-2">
+              <span className="text-slate-500">Payment</span>
+              <StatusBadge status={coupon.paymentStatus} />
+            </div>
+
+            <div className="flex justify-between gap-4">
+              <span className="text-slate-500">Status</span>
+              <StatusBadge status={coupon.bookingStatus} />
+            </div>
+          </div>
+
+          <div className="bg-green-50 border border-green-200 text-green-700 p-3 rounded-xl flex items-start gap-2 mb-6">
+            <FiShield className="mt-1" />
+            <p className="text-sm">
+              This QR coupon is secure and single-use. Do not share it with others.
+            </p>
+          </div>
+
+          <Link to="/student/bookings" className="btn-primary w-full flex items-center justify-center gap-2">
+            <FiArrowLeft />
+            Back to Bookings
+          </Link>
         </div>
-
-        <div className="text-left space-y-2 mb-6">
-          <p>
-            <strong>Name:</strong> {coupon.studentName}
-          </p>
-
-          <p>
-            <strong>Roll Number:</strong> {coupon.rollNumber}
-          </p>
-
-          <p>
-            <strong>Meal:</strong> {coupon.mealName}
-          </p>
-
-          <p>
-            <strong>Date:</strong> {formatDate(coupon.mealDate)}
-          </p>
-
-          <p>
-            <strong>Amount:</strong> ₹{coupon.amount}
-          </p>
-
-          <p>
-            <strong>Payment:</strong> {coupon.paymentStatus}
-          </p>
-
-          <p>
-            <strong>Status:</strong> {coupon.bookingStatus}
-          </p>
-          
-
-
-
-        </div>
-
-        <p className="text-sm text-gray-600 mb-4">
-          Show this QR coupon at mess entry. This coupon can be used only once.
-        </p>
-
-        <Link
-          to="/student/bookings"
-          className="bg-blue-700 text-white px-4 py-2 rounded"
-        >
-          Back to Bookings
-        </Link>
       </div>
-    </div>
+    </main>
   );
 };
 

@@ -188,7 +188,7 @@ const Register = () => {
                   <FiHash className="auth-icon" />
                   <input
                     name="rollNumber"
-                    placeholder="Example: 22UEC123"
+                    placeholder="Example: 23UEC598"
                     value={formData.rollNumber}
                     onChange={handleChange}
                     className="auth-input"
@@ -261,7 +261,7 @@ const Register = () => {
                   <FiHome className="auth-icon" />
                   <input
                     name="roomNumber"
-                    placeholder="Example: 205"
+                    placeholder="Example: E002"
                     value={formData.roomNumber}
                     onChange={handleChange}
                     className="auth-input"
