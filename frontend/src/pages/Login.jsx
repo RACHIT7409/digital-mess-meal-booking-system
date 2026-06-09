@@ -160,13 +160,13 @@ const Login = () => {
               </label>
 
               <div className="relative">
-                <FiUserCheck className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                <FiUserCheck className="auth-icon" />
 
                 <select
                   name="userType"
                   value={formData.userType}
                   onChange={handleChange}
-                  className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-300 bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-100 outline-none"
+                  className="auth-select"
                   required
                 >
                   <option value="">Please Select</option>
@@ -185,7 +185,7 @@ const Login = () => {
               </label>
 
               <div className="relative">
-                <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                <FiMail className="auth-icon" />
 
                 <input
                   type="email"
@@ -193,7 +193,7 @@ const Login = () => {
                   placeholder="Enter your email address"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-300 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 outline-none"
+                  className="auth-input"
                   required
                 />
               </div>
@@ -205,7 +205,7 @@ const Login = () => {
               </label>
 
               <div className="relative">
-                <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                <FiLock className="auth-icon" />
 
                 <input
                   type={showPassword ? "text" : "password"}
@@ -213,7 +213,7 @@ const Login = () => {
                   placeholder="Enter your password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full pl-11 pr-12 py-3 rounded-xl border border-slate-300 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 outline-none"
+                  className="auth-input pr-12"
                   required
                 />
 
