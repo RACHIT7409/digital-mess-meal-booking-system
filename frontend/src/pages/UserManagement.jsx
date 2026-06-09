@@ -1,6 +1,16 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import {
+  FiArrowLeft,
+  FiRefreshCw,
+  FiSearch,
+  FiShield,
+  FiUserCheck,
+  FiUsers,
+} from "react-icons/fi";
 import API from "../api/api";
+import PageHeader from "../components/PageHeader";
+import StatusBadge from "../components/StatusBadge";
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -10,11 +20,12 @@ const UserManagement = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [pageLoading, setPageLoading] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const [loadingId, setLoadingId] = useState(null);
 
   const fetchUsers = async () => {
     try {
       setPageLoading(true);
+      setError("");
 
       const params = new URLSearchParams();
 
@@ -43,9 +54,15 @@ const UserManagement = () => {
   };
 
   const handleRoleChange = async (userId, newRole) => {
+    const confirmChange = window.confirm(
+      `Are you sure you want to change this user's role to ${newRole}?`
+    );
+
+    if (!confirmChange) return;
+
     setError("");
     setSuccess("");
-    setLoading(true);
+    setLoadingId(userId);
 
     try {
       await API.patch(`/users/${userId}/role`, {
@@ -57,14 +74,22 @@ const UserManagement = () => {
     } catch (err) {
       setError(err.response?.data?.message || "Failed to update role");
     } finally {
-      setLoading(false);
+      setLoadingId(null);
     }
   };
 
-  const handleToggleStatus = async (userId) => {
+  const handleToggleStatus = async (userId, currentStatus) => {
+    const confirmChange = window.confirm(
+      currentStatus
+        ? "Are you sure you want to deactivate this user?"
+        : "Are you sure you want to activate this user?"
+    );
+
+    if (!confirmChange) return;
+
     setError("");
     setSuccess("");
-    setLoading(true);
+    setLoadingId(userId);
 
     try {
       await API.patch(`/users/${userId}/toggle-status`);
@@ -73,45 +98,71 @@ const UserManagement = () => {
     } catch (err) {
       setError(err.response?.data?.message || "Failed to update status");
     } finally {
-      setLoading(false);
+      setLoadingId(null);
     }
   };
 
-  return (
-    <div className="p-6">
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-3">
-        <h1 className="text-2xl font-bold text-blue-700">User Management</h1>
+  if (pageLoading) {
+    return (
+      <main className="page-container">
+        <div className="glass-card p-6">Loading users...</div>
+      </main>
+    );
+  }
 
-        <Link
-          to="/admin/dashboard"
-          className="bg-gray-700 text-white px-4 py-2 rounded"
-        >
-          Back
-        </Link>
-      </div>
+  return (
+    <main className="page-container">
+      <PageHeader
+        title="User Management"
+        subtitle="Manage students, managers, admins, roles, and account status."
+        rightContent={
+          <>
+            <button
+              onClick={fetchUsers}
+              className="btn-primary flex items-center gap-2"
+            >
+              <FiRefreshCw />
+              Refresh
+            </button>
+
+            <Link
+              to="/admin/dashboard"
+              className="btn-dark flex items-center gap-2"
+            >
+              <FiArrowLeft />
+              Back
+            </Link>
+          </>
+        }
+      />
 
       {error && (
-        <p className="bg-red-100 text-red-700 p-3 rounded mb-4">{error}</p>
+        <p className="bg-red-50 text-red-700 border border-red-200 p-3 rounded-xl mb-4">
+          {error}
+        </p>
       )}
 
       {success && (
-        <p className="bg-green-100 text-green-700 p-3 rounded mb-4">
+        <p className="bg-green-50 text-green-700 border border-green-200 p-3 rounded-xl mb-4">
           {success}
         </p>
       )}
 
-      <div className="bg-white shadow rounded p-4 mb-6">
-        <form onSubmit={handleSearch} className="grid md:grid-cols-4 gap-3">
-          <input
-            type="text"
-            placeholder="Search name, email, roll no."
-            className="border px-3 py-2 rounded"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+      <div className="glass-card p-5 mb-6">
+        <form onSubmit={handleSearch} className="grid lg:grid-cols-4 gap-4">
+          <div className="relative">
+            <FiSearch className="auth-icon" />
+            <input
+              type="text"
+              placeholder="Search name, email, roll number"
+              className="auth-input"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
 
           <select
-            className="border px-3 py-2 rounded"
+            className="w-full"
             value={role}
             onChange={(e) => setRole(e.target.value)}
           >
@@ -122,7 +173,7 @@ const UserManagement = () => {
           </select>
 
           <select
-            className="border px-3 py-2 rounded"
+            className="w-full"
             value={isActive}
             onChange={(e) => setIsActive(e.target.value)}
           >
@@ -131,88 +182,178 @@ const UserManagement = () => {
             <option value="false">Inactive</option>
           </select>
 
-          <button className="bg-blue-700 text-white px-4 py-2 rounded">
+          <button className="btn-primary flex items-center justify-center gap-2">
+            <FiSearch />
             Search
           </button>
         </form>
       </div>
 
-      {pageLoading ? (
-        <p>Loading users...</p>
-      ) : users.length === 0 ? (
-        <div className="bg-white shadow rounded p-6">No users found.</div>
+      {users.length === 0 ? (
+        <div className="glass-card p-8 text-center">
+          <FiUsers className="mx-auto text-4xl text-blue-700 mb-3" />
+          <h2 className="text-xl font-extrabold">No users found</h2>
+          <p className="text-slate-500 mt-2">
+            Try changing filters or search query.
+          </p>
+        </div>
       ) : (
-        <div className="bg-white shadow rounded overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-gray-200">
-              <tr>
-                <th className="p-3 text-left">Name</th>
-                <th className="p-3 text-left">Email</th>
-                <th className="p-3 text-left">Roll No.</th>
-                <th className="p-3 text-left">Hostel/Room</th>
-                <th className="p-3 text-left">Role</th>
-                <th className="p-3 text-left">Status</th>
-                <th className="p-3 text-left">Actions</th>
-              </tr>
-            </thead>
+        <>
+          {/* Desktop table */}
+          <div className="table-card hidden lg:block">
+            <table className="table-pro">
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Email</th>
+                  <th>Roll No.</th>
+                  <th>Hostel / Room</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
 
-            <tbody>
-              {users.map((user) => (
-                <tr key={user._id} className="border-t">
-                  <td className="p-3">{user.name}</td>
-                  <td className="p-3">{user.email}</td>
-                  <td className="p-3">{user.rollNumber || "-"}</td>
-                  <td className="p-3">
-                    {user.hostel || "-"} / {user.roomNumber || "-"}
-                  </td>
+              <tbody>
+                {users.map((user) => (
+                  <tr key={user._id}>
+                    <td>
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center font-extrabold">
+                          {user.name?.charAt(0)?.toUpperCase() || "U"}
+                        </div>
 
-                  <td className="p-3">
+                        <div>
+                          <p className="font-extrabold">{user.name}</p>
+                          <p className="text-xs text-slate-500">{user._id}</p>
+                        </div>
+                      </div>
+                    </td>
+
+                    <td>{user.email}</td>
+                    <td>{user.rollNumber || "-"}</td>
+                    <td>
+                      {user.hostel || "-"} / {user.roomNumber || "-"}
+                    </td>
+
+                    <td>
+                      <select
+                        value={user.role}
+                        onChange={(e) =>
+                          handleRoleChange(user._id, e.target.value)
+                        }
+                        disabled={loadingId === user._id}
+                        className="min-w-[130px]"
+                      >
+                        <option value="student">Student</option>
+                        <option value="manager">Manager</option>
+                        <option value="admin">Admin</option>
+                      </select>
+                    </td>
+
+                    <td>
+                      <StatusBadge
+                        status={user.isActive ? "ACTIVE" : "INACTIVE"}
+                      />
+                    </td>
+
+                    <td>
+                      <button
+                        onClick={() =>
+                          handleToggleStatus(user._id, user.isActive)
+                        }
+                        disabled={loadingId === user._id}
+                        className={
+                          user.isActive
+                            ? "btn-danger text-sm"
+                            : "btn-success text-sm"
+                        }
+                      >
+                        {loadingId === user._id
+                          ? "Updating..."
+                          : user.isActive
+                          ? "Deactivate"
+                          : "Activate"}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile cards */}
+          <div className="grid gap-5 lg:hidden">
+            {users.map((user) => (
+              <div key={user._id} className="pro-card p-5 fade-in">
+                <div className="flex items-start justify-between gap-4 mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center text-xl font-extrabold">
+                      {user.name?.charAt(0)?.toUpperCase() || "U"}
+                    </div>
+
+                    <div>
+                      <h2 className="text-xl font-extrabold">{user.name}</h2>
+                      <p className="text-sm text-slate-500 break-all">
+                        {user.email}
+                      </p>
+                    </div>
+                  </div>
+
+                  <StatusBadge status={user.isActive ? "ACTIVE" : "INACTIVE"} />
+                </div>
+
+                <div className="grid sm:grid-cols-2 gap-4 mb-4">
+                  <div className="bg-slate-50 rounded-2xl p-4">
+                    <p className="text-sm text-slate-500">Roll Number</p>
+                    <h3 className="font-extrabold">{user.rollNumber || "-"}</h3>
+                  </div>
+
+                  <div className="bg-slate-50 rounded-2xl p-4">
+                    <p className="text-sm text-slate-500">Hostel / Room</p>
+                    <h3 className="font-extrabold">
+                      {user.hostel || "-"} / {user.roomNumber || "-"}
+                    </h3>
+                  </div>
+
+                  <div className="bg-slate-50 rounded-2xl p-4 sm:col-span-2">
+                    <p className="text-sm text-slate-500">Role</p>
                     <select
                       value={user.role}
                       onChange={(e) =>
                         handleRoleChange(user._id, e.target.value)
                       }
-                      disabled={loading}
-                      className="border px-2 py-1 rounded"
+                      disabled={loadingId === user._id}
+                      className="w-full mt-2"
                     >
                       <option value="student">Student</option>
                       <option value="manager">Manager</option>
                       <option value="admin">Admin</option>
                     </select>
-                  </td>
+                  </div>
+                </div>
 
-                  <td className="p-3">
-                    {user.isActive ? (
-                      <span className="bg-green-100 text-green-700 px-2 py-1 rounded">
-                        Active
-                      </span>
-                    ) : (
-                      <span className="bg-red-100 text-red-700 px-2 py-1 rounded">
-                        Inactive
-                      </span>
-                    )}
-                  </td>
-
-                  <td className="p-3">
-                    <button
-                      onClick={() => handleToggleStatus(user._id)}
-                      disabled={loading}
-                      className={`px-3 py-1 rounded text-white ${
-                        user.isActive
-                          ? "bg-red-600 hover:bg-red-700"
-                          : "bg-green-600 hover:bg-green-700"
-                      }`}
-                    >
-                      {user.isActive ? "Deactivate" : "Activate"}
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                <button
+                  onClick={() => handleToggleStatus(user._id, user.isActive)}
+                  disabled={loadingId === user._id}
+                  className={
+                    user.isActive
+                      ? "btn-danger w-full"
+                      : "btn-success w-full"
+                  }
+                >
+                  {loadingId === user._id
+                    ? "Updating..."
+                    : user.isActive
+                    ? "Deactivate User"
+                    : "Activate User"}
+                </button>
+              </div>
+            ))}
+          </div>
+        </>
       )}
-    </div>
+    </main>
   );
 };
 

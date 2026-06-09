@@ -380,3 +380,10 @@ input:focus {
   font-size: 18px;
   pointer-events: none;
 }
+
+
+@media (max-width: 1279px) {
+  .sticky {
+    position: static;
+  }
+}

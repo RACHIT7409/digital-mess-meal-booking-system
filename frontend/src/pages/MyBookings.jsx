@@ -1,12 +1,22 @@
-import { loadRazorpayScript } from "../utils/loadRazorpay";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import {
+  FiCalendar,
+  FiCreditCard,
+  FiEye,
+  FiRefreshCw,
+  FiXCircle,
+} from "react-icons/fi";
 import API from "../api/api";
+import PageHeader from "../components/PageHeader";
+import StatusBadge from "../components/StatusBadge";
+import { loadRazorpayScript } from "../utils/loadRazorpay";
 
 const MyBookings = () => {
   const [bookings, setBookings] = useState([]);
   const [refundReason, setRefundReason] = useState({});
   const [loading, setLoading] = useState(false);
+  const [paymentLoadingId, setPaymentLoadingId] = useState(null);
   const [pageLoading, setPageLoading] = useState(true);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -29,20 +39,18 @@ const MyBookings = () => {
   const handleRazorpayPayment = async (booking) => {
     setError("");
     setSuccess("");
-    setLoading(true);
+    setPaymentLoadingId(booking._id);
 
     try {
       const scriptLoaded = await loadRazorpayScript();
 
       if (!scriptLoaded) {
         setError("Razorpay SDK failed to load. Check your internet connection.");
-        setLoading(false);
+        setPaymentLoadingId(null);
         return;
       }
 
-      const orderRes = await API.post(
-        `/payments/razorpay/order/${booking._id}`
-      );
+      const orderRes = await API.post(`/payments/razorpay/order/${booking._id}`);
 
       const { order, key, booking: bookingInfo } = orderRes.data;
 
@@ -83,7 +91,7 @@ const MyBookings = () => {
         },
 
         theme: {
-          color: "#1d4ed8",
+          color: "#2563eb",
         },
       };
 
@@ -97,27 +105,17 @@ const MyBookings = () => {
     } catch (err) {
       setError(err.response?.data?.message || "Failed to start Razorpay payment");
     } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDummyPayment = async (bookingId) => {
-    setError("");
-    setSuccess("");
-    setLoading(true);
-
-    try {
-      await API.patch(`/payments/dummy-success/${bookingId}`);
-      setSuccess("Payment successful. QR coupon generated.");
-      fetchBookings();
-    } catch (err) {
-      setError(err.response?.data?.message || "Payment failed");
-    } finally {
-      setLoading(false);
+      setPaymentLoadingId(null);
     }
   };
 
   const handleCancelBooking = async (bookingId) => {
+    const confirmCancel = window.confirm(
+      "Are you sure you want to cancel this booking?"
+    );
+
+    if (!confirmCancel) return;
+
     setError("");
     setSuccess("");
     setLoading(true);
@@ -158,6 +156,7 @@ const MyBookings = () => {
       });
 
       setSuccess("Refund request submitted successfully.");
+
       setRefundReason((prev) => ({
         ...prev,
         [bookingId]: "",
@@ -175,153 +174,216 @@ const MyBookings = () => {
     return new Date(dateValue).toLocaleDateString("en-IN");
   };
 
+  const formatDateTime = (dateValue) => {
+    if (!dateValue) return "-";
+    return new Date(dateValue).toLocaleString("en-IN");
+  };
+
+  const canPay = (booking) => {
+    return (
+      booking.paymentStatus === "PENDING_PAYMENT" &&
+      booking.bookingStatus !== "CANCELLED"
+    );
+  };
+
+  const canViewCoupon = (booking) => {
+    return booking.paymentStatus === "PAID" && booking.qrCode;
+  };
+
+  const canRequestRefund = (booking) => {
+    return (
+      booking.paymentStatus === "PAID" &&
+      booking.bookingStatus === "CONFIRMED" &&
+      !booking.isServed
+    );
+  };
+
   if (pageLoading) {
     return (
-      <div className="p-6">
-        <p>Loading bookings...</p>
-      </div>
+      <main className="page-container">
+        <div className="glass-card p-6">Loading bookings...</div>
+      </main>
     );
   }
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-blue-700">My Bookings</h1>
-
-        <Link
-          to="/student/meals"
-          className="bg-blue-700 text-white px-4 py-2 rounded"
-        >
-          Book New Meal
-        </Link>
-      </div>
+    <main className="page-container">
+      <PageHeader
+        title="My Bookings"
+        subtitle="Track your meal bookings, payments, QR coupons, and refunds."
+        rightContent={
+          <Link to="/student/meals" className="btn-primary flex items-center gap-2">
+            <FiCalendar />
+            Book New Meal
+          </Link>
+        }
+      />
 
       {error && (
-        <p className="bg-red-100 text-red-700 p-3 rounded mb-4">{error}</p>
+        <p className="bg-red-50 text-red-700 border border-red-200 p-3 rounded-xl mb-4">
+          {error}
+        </p>
       )}
 
       {success && (
-        <p className="bg-green-100 text-green-700 p-3 rounded mb-4">
+        <p className="bg-green-50 text-green-700 border border-green-200 p-3 rounded-xl mb-4">
           {success}
         </p>
       )}
 
       {bookings.length === 0 ? (
-        <div className="bg-white shadow rounded p-6">
-          <p>No bookings found.</p>
+        <div className="glass-card p-8 text-center">
+          <FiCalendar className="mx-auto text-4xl text-blue-700 mb-3" />
+          <h2 className="text-xl font-extrabold">No bookings found</h2>
+          <p className="text-slate-500 mt-2">
+            Book your first meal to see it here.
+          </p>
+
+          <Link
+            to="/student/meals"
+            className="btn-primary inline-flex items-center gap-2 mt-5"
+          >
+            <FiCalendar />
+            Book Meal
+          </Link>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-5">
           {bookings.map((booking) => (
-            <div key={booking._id} className="bg-white shadow rounded p-5">
-              <div className="grid md:grid-cols-4 gap-4 mb-4">
+            <div key={booking._id} className="pro-card p-6 fade-in">
+              <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-5 mb-5">
                 <div>
-                  <p className="text-gray-500 text-sm">Meal</p>
-                  <h2 className="font-bold">{booking.mealName}</h2>
-                </div>
-
-                <div>
-                  <p className="text-gray-500 text-sm">Date</p>
-                  <h2 className="font-bold">
-                    {formatDate(booking.mealDate)}
+                  <p className="text-sm text-slate-500">Meal</p>
+                  <h2 className="text-2xl font-extrabold text-slate-900">
+                    {booking.mealName}
                   </h2>
+
+                  <p className="text-slate-500 mt-1">
+                    Booking ID:{" "}
+                    <span className="font-mono text-xs break-all">
+                      {booking._id}
+                    </span>
+                  </p>
                 </div>
 
-                <div>
-                  <p className="text-gray-500 text-sm">Amount</p>
-                  <h2 className="font-bold">₹{booking.amount}</h2>
-                </div>
+                <div className="flex flex-wrap gap-2">
+                  <StatusBadge status={booking.bookingStatus} />
+                  <StatusBadge status={booking.paymentStatus} />
 
-                <div>
-                  <p className="text-gray-500 text-sm">Status</p>
-                  <h2 className="font-bold">{booking.bookingStatus}</h2>
+                  <span
+                    className={`status-badge ${
+                      booking.isServed ? "badge-blue" : "badge-gray"
+                    }`}
+                  >
+                    Served: {booking.isServed ? "Yes" : "No"}
+                  </span>
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-3 mb-4">
-                <span className="bg-gray-100 px-3 py-1 rounded">
-                  Payment: {booking.paymentStatus}
-                </span>
+              <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-5">
+                <div className="bg-slate-50 rounded-2xl p-4">
+                  <p className="text-sm text-slate-500">Meal Date</p>
+                  <h3 className="font-extrabold mt-1">
+                    {formatDate(booking.mealDate)}
+                  </h3>
+                </div>
 
-                <span className="bg-gray-100 px-3 py-1 rounded">
-                  Served: {booking.isServed ? "Yes" : "No"}
-                </span>
+                <div className="bg-slate-50 rounded-2xl p-4">
+                  <p className="text-sm text-slate-500">Amount</p>
+                  <h3 className="font-extrabold mt-1">₹{booking.amount}</h3>
+                </div>
+
+                <div className="bg-slate-50 rounded-2xl p-4">
+                  <p className="text-sm text-slate-500">Booked At</p>
+                  <h3 className="font-extrabold mt-1">
+                    {formatDateTime(booking.bookingTime)}
+                  </h3>
+                </div>
+
+                <div className="bg-slate-50 rounded-2xl p-4">
+                  <p className="text-sm text-slate-500">Served At</p>
+                  <h3 className="font-extrabold mt-1">
+                    {formatDateTime(booking.servedAt)}
+                  </h3>
+                </div>
               </div>
 
-              <div className="flex flex-wrap gap-3">
-                {booking.paymentStatus === "PENDING_PAYMENT" &&
-                  booking.bookingStatus !== "CANCELLED" && (
-                    <>
-                      <button
-                        onClick={() => handleRazorpayPayment(booking)}
-                        disabled={loading}
-                        className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:bg-gray-400"
-                      >
-                        Pay with Razorpay
-                      </button>
+              <div className="flex flex-wrap gap-3 mb-5">
+                {canPay(booking) && (
+                  <>
+                    <button
+                      onClick={() => handleRazorpayPayment(booking)}
+                      disabled={paymentLoadingId === booking._id}
+                      className="btn-success flex items-center gap-2"
+                    >
+                      <FiCreditCard />
+                      {paymentLoadingId === booking._id
+                        ? "Opening Payment..."
+                        : "Pay with Razorpay"}
+                    </button>
 
-                  
-
-
-                    </>
-                  )}
-
-                {booking.paymentStatus === "PENDING_PAYMENT" &&
-                  booking.bookingStatus !== "CANCELLED" && (
                     <button
                       onClick={() => handleCancelBooking(booking._id)}
                       disabled={loading}
-                      className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 disabled:bg-gray-400"
+                      className="btn-danger flex items-center gap-2"
                     >
+                      <FiXCircle />
                       Cancel Booking
                     </button>
-                  )}
+                  </>
+                )}
 
-                {booking.paymentStatus === "PAID" && booking.qrCode && (
+                {canViewCoupon(booking) && (
                   <Link
                     to={`/student/coupon/${booking._id}`}
-                    className="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-800"
+                    className="btn-primary flex items-center gap-2"
                   >
+                    <FiEye />
                     View QR Coupon
                   </Link>
                 )}
               </div>
 
-              {booking.paymentStatus === "PAID" &&
-                booking.bookingStatus === "CONFIRMED" &&
-                !booking.isServed && (
-                  <div className="mt-4 border-t pt-4">
-                    <label className="block font-medium mb-2">
-                      Refund Reason
-                    </label>
+              {booking.bookingStatus === "NOT_SERVED" && (
+                <div className="bg-orange-50 border border-orange-200 text-orange-700 p-4 rounded-2xl mb-5">
+                  <p className="font-bold">Marked as Not Served</p>
+                  <p className="text-sm mt-1">
+                    {booking.notServedReason || "Meal was not served."}
+                  </p>
+                </div>
+              )}
 
-                    <textarea
-                      value={refundReason[booking._id] || ""}
-                      onChange={(e) =>
-                        handleRefundReasonChange(
-                          booking._id,
-                          e.target.value
-                        )
-                      }
-                      className="w-full border px-3 py-2 rounded mb-2"
-                      placeholder="Example: I paid but meal was not served..."
-                      rows="2"
-                    />
+              {canRequestRefund(booking) && (
+                <div className="border-t border-slate-200 pt-5">
+                  <label className="block font-bold text-slate-700 mb-2">
+                    Refund Reason
+                  </label>
 
-                    <button
-                      onClick={() => handleRefundRequest(booking._id)}
-                      disabled={loading}
-                      className="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700 disabled:bg-gray-400"
-                    >
-                      Request Refund
-                    </button>
-                  </div>
-                )}
+                  <textarea
+                    value={refundReason[booking._id] || ""}
+                    onChange={(e) =>
+                      handleRefundReasonChange(booking._id, e.target.value)
+                    }
+                    className="w-full mb-3"
+                    placeholder="Example: I paid but meal was not served..."
+                    rows="3"
+                  />
+
+                  <button
+                    onClick={() => handleRefundRequest(booking._id)}
+                    disabled={loading}
+                    className="btn-danger flex items-center gap-2"
+                  >
+                    <FiRefreshCw />
+                    Request Refund
+                  </button>
+                </div>
+              )}
             </div>
           ))}
         </div>
       )}
-    </div>
+    </main>
   );
 };
 

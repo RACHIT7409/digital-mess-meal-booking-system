@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import {
+  FiArrowLeft,
+  FiRefreshCw,
+  FiSearch,
+  FiClock,
+  FiAlertTriangle,
+} from "react-icons/fi";
 import API from "../api/api";
+import PageHeader from "../components/PageHeader";
+import StatusBadge from "../components/StatusBadge";
 
 const TodayBookings = () => {
   const [bookings, setBookings] = useState([]);
@@ -10,7 +19,7 @@ const TodayBookings = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [pageLoading, setPageLoading] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const [loadingId, setLoadingId] = useState(null);
 
   const fetchBookings = async () => {
     try {
@@ -49,9 +58,15 @@ const TodayBookings = () => {
       return;
     }
 
+    const confirmAction = window.confirm(
+      "Are you sure you want to mark this booking as NOT_SERVED?"
+    );
+
+    if (!confirmAction) return;
+
     setError("");
     setSuccess("");
-    setLoading(true);
+    setLoadingId(bookingId);
 
     try {
       await API.patch(`/bookings/${bookingId}/not-served`, {
@@ -71,7 +86,7 @@ const TodayBookings = () => {
         err.response?.data?.message || "Failed to mark booking as not served"
       );
     } finally {
-      setLoading(false);
+      setLoadingId(null);
     }
   };
 
@@ -84,32 +99,9 @@ const TodayBookings = () => {
     return new Date(dateValue).toLocaleTimeString("en-IN");
   };
 
-  const getStatusBadge = (status) => {
-    if (status === "CONFIRMED") {
-      return "bg-green-100 text-green-700";
-    }
-
-    if (status === "SERVED") {
-      return "bg-blue-100 text-blue-700";
-    }
-
-    if (status === "NOT_SERVED") {
-      return "bg-orange-100 text-orange-700";
-    }
-
-    if (status === "REFUND_REQUESTED") {
-      return "bg-yellow-100 text-yellow-700";
-    }
-
-    if (status === "REFUNDED") {
-      return "bg-purple-100 text-purple-700";
-    }
-
-    if (status === "CANCELLED") {
-      return "bg-red-100 text-red-700";
-    }
-
-    return "bg-gray-100 text-gray-700";
+  const formatDateTime = (dateValue) => {
+    if (!dateValue) return "-";
+    return new Date(dateValue).toLocaleString("en-IN");
   };
 
   const canMarkNotServed = (booking) => {
@@ -120,160 +112,175 @@ const TodayBookings = () => {
     );
   };
 
+  if (pageLoading) {
+    return (
+      <main className="page-container">
+        <div className="glass-card p-6">Loading today’s bookings...</div>
+      </main>
+    );
+  }
+
   return (
-    <div className="p-6">
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-3">
-        <h1 className="text-2xl font-bold text-blue-700">
-          Today’s Bookings
-        </h1>
+    <main className="page-container">
+      <PageHeader
+        title="Today’s Bookings"
+        subtitle="View today's students, meal status, payment status, and not-served cases."
+        rightContent={
+          <>
+            <select
+              value={mealName}
+              onChange={(e) => setMealName(e.target.value)}
+              className="min-w-[160px]"
+            >
+              <option value="">All Meals</option>
+              <option value="Breakfast">Breakfast</option>
+              <option value="Lunch">Lunch</option>
+              <option value="Snacks">Snacks</option>
+              <option value="Dinner">Dinner</option>
+            </select>
 
-        <div className="flex gap-3">
-          <select
-            value={mealName}
-            onChange={(e) => setMealName(e.target.value)}
-            className="border px-3 py-2 rounded"
-          >
-            <option value="">All Meals</option>
-            <option value="Breakfast">Breakfast</option>
-            <option value="Lunch">Lunch</option>
-            <option value="Snacks">Snacks</option>
-            <option value="Dinner">Dinner</option>
-          </select>
+            <button
+              onClick={fetchBookings}
+              className="btn-primary flex items-center gap-2"
+            >
+              <FiRefreshCw />
+              Refresh
+            </button>
 
-          <button
-            onClick={fetchBookings}
-            className="bg-blue-700 text-white px-4 py-2 rounded"
-          >
-            Refresh
-          </button>
-
-          <Link
-            to="/manager/dashboard"
-            className="bg-gray-700 text-white px-4 py-2 rounded"
-          >
-            Back
-          </Link>
-        </div>
-      </div>
+            <Link
+              to="/manager/dashboard"
+              className="btn-dark flex items-center gap-2"
+            >
+              <FiArrowLeft />
+              Back
+            </Link>
+          </>
+        }
+      />
 
       {error && (
-        <p className="bg-red-100 text-red-700 p-3 rounded mb-4">{error}</p>
+        <p className="bg-red-50 text-red-700 border border-red-200 p-3 rounded-xl mb-4">
+          {error}
+        </p>
       )}
 
       {success && (
-        <p className="bg-green-100 text-green-700 p-3 rounded mb-4">
+        <p className="bg-green-50 text-green-700 border border-green-200 p-3 rounded-xl mb-4">
           {success}
         </p>
       )}
 
-      {pageLoading ? (
-        <p>Loading today’s bookings...</p>
-      ) : bookings.length === 0 ? (
-        <div className="bg-white shadow rounded p-6">
-          <p>No bookings found for today.</p>
+      {bookings.length === 0 ? (
+        <div className="glass-card p-8 text-center">
+          <FiSearch className="mx-auto text-4xl text-blue-700 mb-3" />
+          <h2 className="text-xl font-extrabold">No bookings found</h2>
+          <p className="text-slate-500 mt-2">
+            There are no bookings for selected meal today.
+          </p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-5">
           {bookings.map((booking) => (
-            <div key={booking._id} className="bg-white shadow rounded p-5">
-              <div className="grid md:grid-cols-4 gap-4 mb-4">
+            <div key={booking._id} className="pro-card p-6 fade-in">
+              <div className="flex flex-col xl:flex-row xl:items-start xl:justify-between gap-5 mb-5">
                 <div>
-                  <p className="text-gray-500 text-sm">Student</p>
-                  <h2 className="font-bold">{booking.student?.name}</h2>
-                </div>
-
-                <div>
-                  <p className="text-gray-500 text-sm">Roll Number</p>
-                  <h2 className="font-bold">{booking.student?.rollNumber}</h2>
-                </div>
-
-                <div>
-                  <p className="text-gray-500 text-sm">Hostel / Room</p>
-                  <h2 className="font-bold">
-                    {booking.student?.hostel || "-"} /{" "}
-                    {booking.student?.roomNumber || "-"}
+                  <p className="text-sm text-slate-500">Student</p>
+                  <h2 className="text-2xl font-extrabold text-slate-900">
+                    {booking.student?.name || "Student"}
                   </h2>
+
+                  <p className="text-slate-500 mt-1">
+                    Roll No:{" "}
+                    <span className="font-bold text-slate-700">
+                      {booking.student?.rollNumber || "-"}
+                    </span>
+                  </p>
                 </div>
 
-                <div>
-                  <p className="text-gray-500 text-sm">Meal</p>
-                  <h2 className="font-bold">{booking.mealName}</h2>
-                </div>
+                <div className="flex flex-wrap gap-2">
+                  <StatusBadge status={booking.bookingStatus} />
+                  <StatusBadge status={booking.paymentStatus} />
 
-                <div>
-                  <p className="text-gray-500 text-sm">Meal Date</p>
-                  <h2 className="font-bold">{formatDate(booking.mealDate)}</h2>
-                </div>
-
-                <div>
-                  <p className="text-gray-500 text-sm">Amount</p>
-                  <h2 className="font-bold">₹{booking.amount}</h2>
-                </div>
-
-                <div>
-                  <p className="text-gray-500 text-sm">Payment Status</p>
-                  <h2 className="font-bold">{booking.paymentStatus}</h2>
-                </div>
-
-                <div>
-                  <p className="text-gray-500 text-sm">Booking Status</p>
                   <span
-                    className={`inline-block px-3 py-1 rounded text-sm font-medium ${getStatusBadge(
-                      booking.bookingStatus
-                    )}`}
+                    className={`status-badge ${
+                      booking.isServed ? "badge-blue" : "badge-gray"
+                    }`}
                   >
-                    {booking.bookingStatus}
+                    Served: {booking.isServed ? "Yes" : "No"}
                   </span>
                 </div>
+              </div>
 
-                <div>
-                  <p className="text-gray-500 text-sm">Served</p>
-                  <h2 className="font-bold">
-                    {booking.isServed ? "Yes" : "No"}
-                  </h2>
+              <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-5">
+                <div className="bg-slate-50 rounded-2xl p-4">
+                  <p className="text-sm text-slate-500">Hostel / Room</p>
+                  <h3 className="font-extrabold mt-1">
+                    {booking.student?.hostel || "-"} /{" "}
+                    {booking.student?.roomNumber || "-"}
+                  </h3>
                 </div>
 
-                <div>
-                  <p className="text-gray-500 text-sm">Served At</p>
-                  <h2 className="font-bold">{formatTime(booking.servedAt)}</h2>
+                <div className="bg-slate-50 rounded-2xl p-4">
+                  <p className="text-sm text-slate-500">Meal</p>
+                  <h3 className="font-extrabold mt-1">{booking.mealName}</h3>
                 </div>
 
-                <div>
-                  <p className="text-gray-500 text-sm">Booking Time</p>
-                  <h2 className="font-bold">
-                    {new Date(booking.bookingTime).toLocaleString("en-IN")}
-                  </h2>
+                <div className="bg-slate-50 rounded-2xl p-4">
+                  <p className="text-sm text-slate-500">Meal Date</p>
+                  <h3 className="font-extrabold mt-1">
+                    {formatDate(booking.mealDate)}
+                  </h3>
                 </div>
 
-                <div>
-                  <p className="text-gray-500 text-sm">Booking ID</p>
-                  <h2 className="font-bold break-all text-xs">
+                <div className="bg-slate-50 rounded-2xl p-4">
+                  <p className="text-sm text-slate-500">Amount</p>
+                  <h3 className="font-extrabold mt-1">₹{booking.amount}</h3>
+                </div>
+
+                <div className="bg-slate-50 rounded-2xl p-4">
+                  <p className="text-sm text-slate-500">Booking Time</p>
+                  <h3 className="font-extrabold mt-1">
+                    {formatDateTime(booking.bookingTime)}
+                  </h3>
+                </div>
+
+                <div className="bg-slate-50 rounded-2xl p-4">
+                  <p className="text-sm text-slate-500">Served At</p>
+                  <h3 className="font-extrabold mt-1">
+                    {formatTime(booking.servedAt)}
+                  </h3>
+                </div>
+
+                <div className="bg-slate-50 rounded-2xl p-4 sm:col-span-2">
+                  <p className="text-sm text-slate-500">Booking ID</p>
+                  <h3 className="font-mono text-xs font-bold break-all mt-1">
                     {booking._id}
-                  </h2>
+                  </h3>
                 </div>
               </div>
 
               {booking.bookingStatus === "NOT_SERVED" && (
-                <div className="bg-orange-50 border border-orange-200 p-3 rounded mb-4">
-                  <p>
-                    <strong>Not Served Reason:</strong>{" "}
+                <div className="bg-orange-50 border border-orange-200 text-orange-700 p-4 rounded-2xl mb-5">
+                  <p className="font-extrabold flex items-center gap-2">
+                    <FiAlertTriangle />
+                    Marked as Not Served
+                  </p>
+
+                  <p className="text-sm mt-1">
                     {booking.notServedReason || "Marked as not served"}
                   </p>
 
                   {booking.notServedMarkedAt && (
-                    <p className="text-sm text-gray-600 mt-1">
-                      Marked at:{" "}
-                      {new Date(booking.notServedMarkedAt).toLocaleString(
-                        "en-IN"
-                      )}
+                    <p className="text-xs text-orange-600 mt-2">
+                      Marked at: {formatDateTime(booking.notServedMarkedAt)}
                     </p>
                   )}
                 </div>
               )}
 
               {canMarkNotServed(booking) && (
-                <div className="border-t pt-4">
-                  <label className="block font-medium mb-2">
+                <div className="border-t border-slate-200 pt-5">
+                  <label className="block font-bold text-slate-700 mb-2">
                     Reason for Not Served
                   </label>
 
@@ -282,23 +289,27 @@ const TodayBookings = () => {
                     onChange={(e) =>
                       handleReasonChange(booking._id, e.target.value)
                     }
-                    className="w-full border px-3 py-2 rounded mb-3"
-                    rows="2"
+                    className="w-full mb-3"
+                    rows="3"
                     placeholder="Example: Student paid but meal was not available at the counter."
                   />
 
                   <button
                     onClick={() => handleMarkNotServed(booking._id)}
-                    disabled={loading}
-                    className="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700 disabled:bg-gray-400"
+                    disabled={loadingId === booking._id}
+                    className="btn-danger flex items-center gap-2"
                   >
-                    Mark as NOT_SERVED
+                    <FiAlertTriangle />
+                    {loadingId === booking._id
+                      ? "Updating..."
+                      : "Mark as NOT_SERVED"}
                   </button>
                 </div>
               )}
 
               {!canMarkNotServed(booking) && (
-                <div className="border-t pt-3 text-sm text-gray-600">
+                <div className="border-t border-slate-200 pt-4 text-sm text-slate-500 flex items-center gap-2">
+                  <FiClock />
                   {booking.bookingStatus === "SERVED" &&
                     "This booking is already served."}
 
@@ -319,7 +330,7 @@ const TodayBookings = () => {
           ))}
         </div>
       )}
-    </div>
+    </main>
   );
 };
 
