@@ -1,9 +1,19 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import {
+  FiMenu,
+  FiX,
+  FiHome,
+  FiUser,
+  FiLogOut,
+  FiCoffee,
+} from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const { user, logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -19,49 +29,131 @@ const Navbar = () => {
     return "/student/dashboard";
   };
 
+  const navLinkClass = ({ isActive }) =>
+    `flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition ${
+      isActive
+        ? "bg-white text-blue-700 shadow-sm"
+        : "text-blue-50 hover:bg-blue-500/40"
+    }`;
+
   return (
-    <nav className="bg-blue-700 text-white px-6 py-4 flex justify-between items-center">
-      <Link to="/" className="text-xl font-bold">
-        Mess Booking
-      </Link>
+    <header className="sticky top-0 z-50 bg-gradient-to-r from-blue-700 via-blue-600 to-indigo-700 shadow-lg">
+      <nav className="max-w-[1440px] mx-auto px-5 md:px-8 py-4 flex justify-between items-center">
+        <Link to="/" className="flex items-center gap-3 text-white">
+          <div className="w-11 h-11 rounded-2xl bg-white/15 border border-white/20 flex items-center justify-center">
+            <FiCoffee className="text-2xl" />
+          </div>
 
-      <div className="flex gap-4 items-center">
-        {isAuthenticated ? (
-          <>
-            <Link to={getDashboardPath()} className="hover:underline">
-              Dashboard
-            </Link>
+          <div>
+            <h1 className="text-xl font-extrabold leading-none">MessMate</h1>
+            <p className="text-xs text-blue-100 hidden sm:block">
+              Smart meals. Happy hostel life.
+            </p>
+          </div>
+        </Link>
 
-<Link to="/profile" className="hover:underline">
-  Profile
-</Link>
+        <button
+          onClick={() => setOpen(!open)}
+          className="md:hidden text-white text-2xl"
+        >
+          {open ? <FiX /> : <FiMenu />}
+        </button>
 
-            <span className="text-sm bg-blue-900 px-3 py-1 rounded">
-              {user?.role}
-            </span>
+        <div className="hidden md:flex items-center gap-2">
+          {isAuthenticated ? (
+            <>
+              <NavLink to={getDashboardPath()} className={navLinkClass}>
+                <FiHome />
+                Dashboard
+              </NavLink>
 
-            <button
-              onClick={handleLogout}
-              className="bg-red-500 px-4 py-2 rounded hover:bg-red-600"
-            >
-              Logout
-            </button>
-          </>
-        ) : (
-          <>
-            <Link to="/login" className="hover:underline">
-              Login
-            </Link>
-            <Link
-              to="/register"
-              className="bg-white text-blue-700 px-4 py-2 rounded"
-            >
-              Register
-            </Link>
-          </>
-        )}
-      </div>
-    </nav>
+              <NavLink to="/profile" className={navLinkClass}>
+                <FiUser />
+                Profile
+              </NavLink>
+
+              <span className="bg-blue-950/35 text-white px-4 py-2 rounded-xl text-sm font-bold capitalize">
+                {user?.role}
+              </span>
+
+              <button onClick={handleLogout} className="btn-danger flex gap-2">
+                <FiLogOut />
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <NavLink to="/login" className={navLinkClass}>
+                Login
+              </NavLink>
+
+              <Link
+                to="/register"
+                className="bg-white text-blue-700 px-5 py-2 rounded-xl font-bold shadow-sm hover:shadow-md transition"
+              >
+                Register
+              </Link>
+            </>
+          )}
+        </div>
+      </nav>
+
+      {open && (
+        <div className="md:hidden px-5 pb-4 space-y-2 fade-in">
+          {isAuthenticated ? (
+            <>
+              <NavLink
+                to={getDashboardPath()}
+                onClick={() => setOpen(false)}
+                className={navLinkClass}
+              >
+                <FiHome />
+                Dashboard
+              </NavLink>
+
+              <NavLink
+                to="/profile"
+                onClick={() => setOpen(false)}
+                className={navLinkClass}
+              >
+                <FiUser />
+                Profile
+              </NavLink>
+
+              <div className="text-white bg-blue-950/35 px-4 py-2 rounded-xl capitalize font-bold">
+                {user?.role}
+              </div>
+
+              <button
+                onClick={handleLogout}
+                className="btn-danger w-full flex justify-center gap-2"
+              >
+                <FiLogOut />
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <NavLink
+                to="/login"
+                onClick={() => setOpen(false)}
+                className={navLinkClass}
+              >
+                Login
+              </NavLink>
+
+              <Link
+                to="/register"
+                onClick={() => setOpen(false)}
+                className="block text-center bg-white text-blue-700 px-5 py-2 rounded-xl font-bold"
+              >
+                Register
+              </Link>
+            </>
+          )}
+        </div>
+      )}
+    </header>
   );
 };
 

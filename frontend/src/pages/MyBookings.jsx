@@ -260,13 +260,7 @@ const MyBookings = () => {
                         Pay with Razorpay
                       </button>
 
-                      {/* <button
-                        onClick={() => handleDummyPayment(booking._id)}
-                        disabled={loading}
-                        className="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800 disabled:bg-gray-400"
-                      >
-                        Dummy Pay
-                      </button> */}
+                  
 
 
                     </>

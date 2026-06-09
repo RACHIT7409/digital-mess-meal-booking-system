@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
+import { FiCheckCircle, FiClock, FiCreditCard } from "react-icons/fi";
+import { MdQrCodeScanner } from "react-icons/md";
 import { Link } from "react-router-dom";
 import API from "../api/api";
+import PageHeader from "../components/PageHeader";
+import ActionCard from "../components/ActionCard";
+import StatCard from "../components/StatCard";
 
 const ManagerDashboard = () => {
   const [dashboard, setDashboard] = useState(null);
@@ -20,111 +25,111 @@ const ManagerDashboard = () => {
   }, []);
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold text-blue-700 mb-6">
-        Manager Dashboard
-      </h1>
+    <main className="page-container">
+      <PageHeader
+        title="Manager Dashboard"
+        subtitle="Monitor today's bookings, QR verification, and refunds."
+      />
 
-      {error && <p className="bg-red-100 text-red-700 p-3 rounded">{error}</p>}
+      {error && (
+        <p className="bg-red-100 text-red-700 p-3 rounded-xl mb-4">{error}</p>
+      )}
 
-      <div className="grid md:grid-cols-3 gap-4 mb-6">
-        <Link
+      <div className="grid md:grid-cols-3 gap-5 mb-6">
+        <ActionCard
           to="/manager/today-bookings"
-          className="bg-white shadow rounded p-5 hover:shadow-lg"
-        >
-          <h2 className="font-bold text-lg">Today’s Bookings</h2>
-          <p className="text-gray-600">
-            View breakfast, lunch, snacks, and dinner bookings.
-          </p>
-        </Link>
+          title="Today’s Bookings"
+          description="View breakfast, lunch, snacks, and dinner bookings."
+          icon={<FiClock />}
+        />
 
-        <Link
+        <ActionCard
           to="/manager/qr-verification"
-          className="bg-white shadow rounded p-5 hover:shadow-lg"
-        >
-          <h2 className="font-bold text-lg">QR Verification</h2>
-          <p className="text-gray-600">
-            Verify student QR coupon and mark meal served.
-          </p>
-        </Link>
+          title="QR Verification"
+          description="Scan or verify student coupon and mark meal served."
+          icon={<MdQrCodeScanner />}
+        />
 
-        <Link
+        <ActionCard
           to="/manager/refunds"
-          className="bg-white shadow rounded p-5 hover:shadow-lg"
-        >
-          <h2 className="font-bold text-lg">Refund Requests</h2>
-          <p className="text-gray-600">
-            Approve or reject student refund requests.
-          </p>
-        </Link>
+          title="Refund Requests"
+          description="Approve or reject refund requests from students."
+          icon={<FiCheckCircle />}
+        />
       </div>
 
       {dashboard && (
         <>
-          <div className="grid md:grid-cols-4 gap-4 mb-6">
-            <div className="bg-white shadow rounded p-5">
-              <p className="text-gray-600">Today Bookings</p>
-              <h2 className="text-2xl font-bold">{dashboard.todayBookings}</h2>
-            </div>
+          <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-6">
+            <StatCard
+              title="Today Bookings"
+              value={dashboard.todayBookings}
+              icon={<FiClock />}
+            />
 
-            <div className="bg-white shadow rounded p-5">
-              <p className="text-gray-600">Paid Bookings</p>
-              <h2 className="text-2xl font-bold">
-                {dashboard.todayPaidBookings}
-              </h2>
-            </div>
+            <StatCard
+              title="Paid Bookings"
+              value={dashboard.todayPaidBookings}
+              icon={<FiCreditCard />}
+            />
 
-            <div className="bg-white shadow rounded p-5">
-              <p className="text-gray-600">Served Meals</p>
-              <h2 className="text-2xl font-bold">
-                {dashboard.todayServedMeals}
-              </h2>
-            </div>
+            <StatCard
+              title="Served Meals"
+              value={dashboard.todayServedMeals}
+              icon={<FiCheckCircle />}
+            />
 
-            <div className="bg-white shadow rounded p-5">
-              <p className="text-gray-600">Today Revenue</p>
-              <h2 className="text-2xl font-bold">₹{dashboard.todayRevenue}</h2>
-            </div>
+            <StatCard
+              title="Today Revenue"
+              value={`₹${dashboard.todayRevenue}`}
+              icon={<FiCreditCard />}
+            />
           </div>
 
-          <h2 className="text-xl font-bold mb-3">Today Meal Wise Count</h2>
+          <div className="table-card">
+            <div className="p-5 border-b border-slate-200">
+              <h2 className="text-xl font-extrabold text-slate-900">
+                Today Meal Wise Count
+              </h2>
+            </div>
 
-          <div className="bg-white shadow rounded overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-200">
-                <tr>
-                  <th className="p-3 text-left">Meal</th>
-                  <th className="p-3 text-left">Bookings</th>
-                  <th className="p-3 text-left">Served</th>
-                  <th className="p-3 text-left">Pending</th>
-                  <th className="p-3 text-left">Amount</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {dashboard.todayMealWiseCount.length === 0 ? (
+            <div className="overflow-x-auto">
+              <table className="table-pro">
+                <thead>
                   <tr>
-                    <td className="p-3 text-center" colSpan="5">
-                      No paid bookings for today.
-                    </td>
+                    <th>Meal</th>
+                    <th>Bookings</th>
+                    <th>Served</th>
+                    <th>Pending</th>
+                    <th>Amount</th>
                   </tr>
-                ) : (
-                  dashboard.todayMealWiseCount.map((item) => (
-                    <tr key={item._id} className="border-t">
-                      <td className="p-3">{item._id}</td>
-                      <td className="p-3">{item.totalBookings}</td>
-                      <td className="p-3">{item.servedCount}</td>
-                      <td className="p-3">{item.pendingCount}</td>
-                      <td className="p-3">₹{item.totalAmount}</td>
+                </thead>
+
+                <tbody>
+                  {dashboard.todayMealWiseCount.length === 0 ? (
+                    <tr>
+                      <td className="text-center" colSpan="5">
+                        No paid bookings for today.
+                      </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                  ) : (
+                    dashboard.todayMealWiseCount.map((item) => (
+                      <tr key={item._id}>
+                        <td className="font-bold">{item._id}</td>
+                        <td>{item.totalBookings}</td>
+                        <td>{item.servedCount}</td>
+                        <td>{item.pendingCount}</td>
+                        <td className="font-bold">₹{item.totalAmount}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </>
       )}
-    </div>
+    </main>
   );
 };
 

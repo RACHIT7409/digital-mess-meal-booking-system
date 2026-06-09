@@ -1,62 +1,48 @@
-import { Link } from "react-router-dom";
+import { FiCalendar, FiCreditCard, FiRefreshCw, FiUser } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
+import PageHeader from "../components/PageHeader";
+import ActionCard from "../components/ActionCard";
 
 const StudentDashboard = () => {
   const { user } = useAuth();
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold text-blue-700 mb-2">
-        Student Dashboard
-      </h1>
+    <main className="page-container">
+      <PageHeader
+        title="Student Dashboard"
+        subtitle={`Welcome, ${user?.name}. Book meals, view QR coupons, and manage refunds.`}
+      />
 
-      <p className="text-gray-700 mb-6">
-        Welcome, {user?.name}. Here you can book meals, pay, view QR coupons,
-        and request refunds.
-      </p>
-
-      <div className="grid md:grid-cols-4 gap-4">
-        <Link
+      <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-5">
+        <ActionCard
           to="/student/meals"
-          className="bg-white shadow rounded p-5 hover:shadow-lg"
-        >
-          <h2 className="font-bold text-lg">Book Meal</h2>
-          <p className="text-gray-600">
-            Book breakfast, lunch, snacks, or dinner.
-          </p>
-        </Link>
+          title="Book Meal"
+          description="Reserve breakfast, lunch, snacks, or dinner in a few clicks."
+          icon={<FiCalendar />}
+        />
 
-        <Link
+        <ActionCard
           to="/student/bookings"
-          className="bg-white shadow rounded p-5 hover:shadow-lg"
-        >
-          <h2 className="font-bold text-lg">My Bookings</h2>
-          <p className="text-gray-600">
-            View your booking and payment status.
-          </p>
-        </Link>
+          title="My Bookings"
+          description="Track your payment status, coupons, and meal history."
+          icon={<FiCreditCard />}
+        />
 
-        <Link
+        <ActionCard
           to="/student/refunds"
-          className="bg-white shadow rounded p-5 hover:shadow-lg"
-        >
-          <h2 className="font-bold text-lg">My Refunds</h2>
-          <p className="text-gray-600">
-            Track your refund request status.
-          </p>
-        </Link>
+          title="My Refunds"
+          description="Request and track refund status for not-served meals."
+          icon={<FiRefreshCw />}
+        />
 
-        <Link
+        <ActionCard
           to="/profile"
-          className="bg-white shadow rounded p-5 hover:shadow-lg"
-        >
-          <h2 className="font-bold text-lg">Profile</h2>
-          <p className="text-gray-600">
-            View and update your basic details.
-          </p>
-        </Link>
+          title="Profile"
+          description="Update your phone, hostel, room number, and password."
+          icon={<FiUser />}
+        />
       </div>
-    </div>
+    </main>
   );
 };
 

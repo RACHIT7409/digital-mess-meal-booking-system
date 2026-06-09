@@ -1,6 +1,16 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import {
+  FiBarChart2,
+  FiCoffee,
+  FiCreditCard,
+  FiRefreshCw,
+  FiUsers,
+  FiUserPlus,
+} from "react-icons/fi";
 import API from "../api/api";
+import PageHeader from "../components/PageHeader";
+import ActionCard from "../components/ActionCard";
+import StatCard from "../components/StatCard";
 
 const AdminDashboard = () => {
   const [dashboard, setDashboard] = useState(null);
@@ -19,85 +29,71 @@ const AdminDashboard = () => {
     fetchDashboard();
   }, []);
 
-  const Card = ({ title, value }) => (
-    <div className="bg-white shadow rounded p-5">
-      <p className="text-gray-600">{title}</p>
-      <h2 className="text-2xl font-bold">{value}</h2>
-    </div>
-  );
-
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold text-blue-700 mb-6">
-        Admin Dashboard
-      </h1>
+    <main className="page-container">
+      <PageHeader
+        title="Admin Dashboard"
+        subtitle="Control users, meals, staff, refunds, and revenue reports."
+      />
 
-      <div className="grid md:grid-cols-4 gap-4 mb-6">
-        <Link
+      <div className="grid md:grid-cols-4 gap-5 mb-6">
+        <ActionCard
           to="/admin/users"
-          className="bg-white shadow rounded p-5 hover:shadow-lg"
-        >
-          <h2 className="font-bold text-lg">User Management</h2>
-          <p className="text-gray-600">View users and control roles.</p>
-        </Link>
+          title="User Management"
+          description="View users and control roles."
+          icon={<FiUsers />}
+        />
 
-        <Link
+        <ActionCard
           to="/admin/create-staff"
-          className="bg-white shadow rounded p-5 hover:shadow-lg"
-        >
-          <h2 className="font-bold text-lg">Create Staff</h2>
-          <p className="text-gray-600">Create manager or admin accounts.</p>
-        </Link>
+          title="Create Staff"
+          description="Create manager or admin accounts."
+          icon={<FiUserPlus />}
+        />
 
-        <Link
+        <ActionCard
           to="/admin/meals"
-          className="bg-white shadow rounded p-5 hover:shadow-lg"
-        >
-          <h2 className="font-bold text-lg">Meal Management</h2>
-          <p className="text-gray-600">Create, update, or disable meals.</p>
-        </Link>
+          title="Meal Management"
+          description="Create, update, or disable meals."
+          icon={<FiCoffee />}
+        />
 
-        <Link
+        <ActionCard
           to="/admin/reports"
-          className="bg-white shadow rounded p-5 hover:shadow-lg"
-        >
-          <h2 className="font-bold text-lg">Reports</h2>
-          <p className="text-gray-600">View revenue and booking reports.</p>
-        </Link>
+          title="Reports"
+          description="View revenue and booking analytics."
+          icon={<FiBarChart2 />}
+        />
       </div>
 
-      {error && <p className="bg-red-100 text-red-700 p-3 rounded">{error}</p>}
+      {error && (
+        <p className="bg-red-100 text-red-700 p-3 rounded-xl mb-4">{error}</p>
+      )}
 
       {dashboard && (
-        <div className="grid md:grid-cols-4 gap-4">
-          <Card title="Total Users" value={dashboard.users.totalUsers} />
-          <Card title="Students" value={dashboard.users.totalStudents} />
-          <Card title="Managers" value={dashboard.users.totalManagers} />
-          <Card title="Admins" value={dashboard.users.totalAdmins} />
+        <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-5">
+          <StatCard title="Total Users" value={dashboard.users.totalUsers} icon={<FiUsers />} />
+          <StatCard title="Students" value={dashboard.users.totalStudents} icon={<FiUsers />} />
+          <StatCard title="Managers" value={dashboard.users.totalManagers} icon={<FiUsers />} />
+          <StatCard title="Admins" value={dashboard.users.totalAdmins} icon={<FiUsers />} />
 
-          <Card title="Total Meals" value={dashboard.meals.totalMeals} />
-          <Card title="Active Meals" value={dashboard.meals.activeMeals} />
+          <StatCard title="Total Meals" value={dashboard.meals.totalMeals} icon={<FiCoffee />} />
+          <StatCard title="Active Meals" value={dashboard.meals.activeMeals} icon={<FiCoffee />} />
 
-          <Card title="Total Bookings" value={dashboard.bookings.totalBookings} />
-          <Card title="Paid Bookings" value={dashboard.bookings.paidBookings} />
-          <Card title="Served Meals" value={dashboard.bookings.servedMeals} />
-          <Card
-            title="Pending Payment"
-            value={dashboard.bookings.pendingPaymentBookings}
-          />
+          <StatCard title="Total Bookings" value={dashboard.bookings.totalBookings} icon={<FiCreditCard />} />
+          <StatCard title="Paid Bookings" value={dashboard.bookings.paidBookings} icon={<FiCreditCard />} />
+          <StatCard title="Served Meals" value={dashboard.bookings.servedMeals} icon={<FiCoffee />} />
+          <StatCard title="Pending Payment" value={dashboard.bookings.pendingPaymentBookings} icon={<FiCreditCard />} />
 
-          <Card title="Pending Refunds" value={dashboard.refunds.pendingRefunds} />
-          <Card title="Approved Refunds" value={dashboard.refunds.approvedRefunds} />
-          <Card title="Rejected Refunds" value={dashboard.refunds.rejectedRefunds} />
-          <Card
-            title="Refunded Amount"
-            value={`₹${dashboard.refunds.totalRefundedAmount}`}
-          />
+          <StatCard title="Pending Refunds" value={dashboard.refunds.pendingRefunds} icon={<FiRefreshCw />} />
+          <StatCard title="Approved Refunds" value={dashboard.refunds.approvedRefunds} icon={<FiRefreshCw />} />
+          <StatCard title="Rejected Refunds" value={dashboard.refunds.rejectedRefunds} icon={<FiRefreshCw />} />
+          <StatCard title="Refunded Amount" value={`₹${dashboard.refunds.totalRefundedAmount}`} icon={<FiRefreshCw />} />
 
-          <Card title="Net Revenue" value={`₹${dashboard.revenue.totalRevenue}`} />
+          <StatCard title="Net Revenue" value={`₹${dashboard.revenue.totalRevenue}`} icon={<FiBarChart2 />} />
         </div>
       )}
-    </div>
+    </main>
   );
 };
 
