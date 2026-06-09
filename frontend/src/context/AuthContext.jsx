@@ -8,13 +8,20 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("messToken"));
   const [loading, setLoading] = useState(true);
 
-  const login = (tokenValue, userData) => {
-    localStorage.setItem("messToken", tokenValue);
-    localStorage.setItem("messUser", JSON.stringify(userData));
+const login = async (email, password) => {
+  const res = await API.post("/auth/login", {
+    email,
+    password,
+  });
 
-    setToken(tokenValue);
-    setUser(userData);
-  };
+  localStorage.setItem("messToken", res.data.token);
+  localStorage.setItem("messUser", JSON.stringify(res.data.user));
+
+  setToken(res.data.token);
+  setUser(res.data.user);
+
+  return res.data.user;
+};
 
   const logout = () => {
     localStorage.removeItem("messToken");

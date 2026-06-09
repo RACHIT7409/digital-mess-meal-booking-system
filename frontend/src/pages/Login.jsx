@@ -1,19 +1,36 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import API from "../api/api";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  FiArrowRight,
+  FiCoffee,
+  FiEye,
+  FiEyeOff,
+  FiLock,
+  FiMail,
+  FiShield,
+  FiUserCheck,
+} from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, logout } = useAuth();
 
   const [formData, setFormData] = useState({
+    userType: "",
     email: "",
     password: "",
   });
 
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const roleOptions = [
+    { label: "Student", value: "student" },
+    { label: "Manager", value: "manager" },
+    { label: "Admin", value: "admin" },
+  ];
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -22,81 +39,212 @@ const Login = () => {
     }));
   };
 
-  const redirectByRole = (role) => {
-    if (role === "admin") navigate("/admin/dashboard");
-    else if (role === "manager") navigate("/manager/dashboard");
-    else navigate("/student/dashboard");
+  const getDashboardPath = (role) => {
+    if (role === "admin") return "/admin/dashboard";
+    if (role === "manager") return "/manager/dashboard";
+    return "/student/dashboard";
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!formData.userType) {
+      setError("Please select user type");
+      return;
+    }
+
     setError("");
     setLoading(true);
 
     try {
-      const res = await API.post("/auth/login", formData);
+      const loggedUser = await login(formData.email, formData.password);
 
-      login(res.data.token, res.data.user);
-      redirectByRole(res.data.user.role);
+      if (loggedUser.role !== formData.userType) {
+        logout();
+
+        setError(
+          `You selected ${formData.userType}, but this account belongs to ${loggedUser.role}. Please select correct user type.`
+        );
+
+        return;
+      }
+
+      navigate(getDashboardPath(loggedUser.role));
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+      setError(err.response?.data?.message || "Invalid email or password");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center bg-gray-100 px-4">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white w-full max-w-md p-8 rounded shadow"
-      >
-        <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
+    <main className="min-h-[calc(100vh-80px)] flex items-center justify-center px-4 py-10">
+      <div className="w-full max-w-6xl grid lg:grid-cols-2 gap-8 items-center">
+        {/* Left branding section */}
+        <div className="hidden lg:block fade-in">
+          <div className="glass-card p-10 relative overflow-hidden">
+            <div className="absolute -top-20 -right-20 w-64 h-64 bg-blue-500/10 rounded-full" />
+            <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-indigo-500/10 rounded-full" />
 
-        {error && (
-          <p className="bg-red-100 text-red-700 p-3 rounded mb-4">{error}</p>
-        )}
+            <div className="relative">
+              <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white flex items-center justify-center text-3xl shadow-lg mb-6">
+                <FiCoffee />
+              </div>
 
-        <div className="mb-4">
-          <label className="block mb-1 font-medium">Email</label>
-          <input
-            type="email"
-            name="email"
-            className="w-full border px-3 py-2 rounded"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
+              <h1 className="text-4xl font-extrabold text-slate-900 leading-tight mb-4">
+                Smart Mess Booking <br />
+                <span className="text-blue-700">Made Simple</span>
+              </h1>
+
+              <p className="text-slate-600 text-lg leading-8 mb-8">
+                Book meals, pay securely, verify QR coupons, and manage refunds
+                from one professional dashboard.
+              </p>
+
+              <div className="grid gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center">
+                    <FiShield />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-slate-900">
+                      Secure Role Login
+                    </h3>
+                    <p className="text-sm text-slate-500">
+                      Separate access for student, manager, and admin.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-green-50 text-green-700 flex items-center justify-center">
+                    <FiUserCheck />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-slate-900">
+                      Real-Time Dashboard
+                    </h3>
+                    <p className="text-sm text-slate-500">
+                      Track bookings, payments, QR status, and refunds.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="mb-6">
-          <label className="block mb-1 font-medium">Password</label>
-          <input
-            type="password"
-            name="password"
-            className="w-full border px-3 py-2 rounded"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
+        {/* Login card */}
+        <div className="form-card p-7 md:p-10 fade-in">
+          <div className="text-center mb-8">
+            <div className="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white flex items-center justify-center text-2xl shadow-lg mb-4">
+              <FiCoffee />
+            </div>
+
+            <h2 className="text-3xl font-extrabold text-slate-900">Login</h2>
+            <p className="text-slate-500 mt-2">
+              Select your role and sign in to continue.
+            </p>
+          </div>
+
+          {error && (
+            <p className="bg-red-50 text-red-700 border border-red-200 p-3 rounded-xl mb-5 text-sm">
+              {error}
+            </p>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label className="block font-bold text-slate-700 mb-2">
+                User Type
+              </label>
+
+              <div className="relative">
+                <FiUserCheck className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+
+                <select
+                  name="userType"
+                  value={formData.userType}
+                  onChange={handleChange}
+                  className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-300 bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-100 outline-none"
+                  required
+                >
+                  <option value="">Please Select</option>
+                  {roleOptions.map((role) => (
+                    <option key={role.value} value={role.value}>
+                      {role.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block font-bold text-slate-700 mb-2">
+                Email
+              </label>
+
+              <div className="relative">
+                <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Enter your email address"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-300 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 outline-none"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block font-bold text-slate-700 mb-2">
+                Password
+              </label>
+
+              <div className="relative">
+                <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="Enter your password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full pl-11 pr-12 py-3 rounded-xl border border-slate-300 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 outline-none"
+                  required
+                />
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500"
+                >
+                  {showPassword ? <FiEyeOff /> : <FiEye />}
+                </button>
+              </div>
+            </div>
+
+            <button
+              disabled={loading}
+              className="w-full btn-primary flex items-center justify-center gap-2 py-3 disabled:opacity-60"
+            >
+              {loading ? "Logging in..." : "Login"}
+              {!loading && <FiArrowRight />}
+            </button>
+          </form>
+
+          <p className="text-center text-slate-600 mt-6">
+            New student?{" "}
+            <Link to="/register" className="text-blue-700 font-extrabold">
+              Register here
+            </Link>
+          </p>
         </div>
-
-        <button
-          disabled={loading}
-          className="w-full bg-blue-700 text-white py-2 rounded hover:bg-blue-800 disabled:bg-gray-400"
-        >
-          {loading ? "Logging in..." : "Login"}
-        </button>
-
-        <p className="text-center mt-4">
-          New student?{" "}
-          <Link to="/register" className="text-blue-700 font-medium">
-            Register here
-          </Link>
-        </p>
-      </form>
-    </div>
+      </div>
+    </main>
   );
 };
 
