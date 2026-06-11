@@ -181,7 +181,8 @@ const MyBookings = () => {
 
   const canPay = (booking) => {
     return (
-      booking.paymentStatus === "PENDING_PAYMENT" &&
+      (booking.paymentStatus === "PENDING_PAYMENT" ||
+        booking.paymentStatus === "FAILED") &&
       booking.bookingStatus !== "CANCELLED"
     );
   };
@@ -307,6 +308,16 @@ const MyBookings = () => {
                   </h3>
                 </div>
               </div>
+
+              {booking.paymentStatus === "FAILED" && (
+                <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-2xl mb-5">
+                  <p className="font-bold">Payment Failed</p>
+                  <p className="text-sm mt-1">
+                    Your previous payment was not completed. You can try payment again using
+                    the Pay with Razorpay button.
+                  </p>
+                </div>
+              )}
 
               <div className="flex flex-wrap gap-3 mb-5">
                 {canPay(booking) && (

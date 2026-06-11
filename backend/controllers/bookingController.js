@@ -11,13 +11,6 @@ const {
 
 const { isValidDateString } = require("../utils/validators");
 
-// Helper function to normalize date
-// const normalizeDate = (date) => {
-//   const newDate = new Date(date);
-//   newDate.setHours(0, 0, 0, 0);
-//   return newDate;
-// };
-
 // Student creates booking
 const createBooking = async (req, res) => {
   try {
@@ -75,41 +68,80 @@ const createBooking = async (req, res) => {
     }
 
     // Prevent booking if meal has already started
-if (hasMealStarted(selectedDate, meal.startTime)) {
-  return res.status(400).json({
-    success: false,
-    message: `${meal.mealName} booking is closed because meal time has already started`,
-  });
-}
+    if (hasMealStarted(selectedDate, meal.startTime)) {
+      return res.status(400).json({
+        success: false,
+        message: `${meal.mealName} booking is closed because meal time has already started`,
+      });
+    }
 
-// Check meal-specific booking deadline
-const bookingDeadline = getBookingDeadline(
-  selectedDate,
-  meal.startTime,
-  meal.bookingDeadlineHours
-);
+    // Check meal-specific booking deadline
+    const bookingDeadline = getBookingDeadline(
+      selectedDate,
+      meal.startTime,
+      meal.bookingDeadlineHours
+    );
 
-if (!isBeforeDeadline(bookingDeadline)) {
-  return res.status(400).json({
-    success: false,
-    message: `Booking deadline passed for ${meal.mealName}. Last allowed booking time was ${bookingDeadline.toLocaleString(
-      "en-IN"
-    )}`,
-  });
-}
+    if (!isBeforeDeadline(bookingDeadline)) {
+      return res.status(400).json({
+        success: false,
+        message: `Booking deadline passed for ${
+          meal.mealName
+        }. Last allowed booking time was ${bookingDeadline.toLocaleString(
+          "en-IN"
+        )}`,
+      });
+    }
 
     // Check duplicate booking
     const existingBooking = await Booking.findOne({
       student: req.user._id,
       meal: mealId,
       mealDate: selectedDate,
-    });
+      bookingStatus: {
+        $ne: "CANCELLED",
+      },
+    })
+      .populate("student", "name rollNumber email hostel roomNumber")
+      .populate("meal", "mealName price startTime endTime");
 
     if (existingBooking) {
-      return res.status(400).json({
-        success: false,
-        message: "You have already booked this meal for this date",
-      });
+      // If booking is already successful/active, block duplicate booking
+      if (
+        existingBooking.paymentStatus === "PAID" ||
+        existingBooking.bookingStatus === "CONFIRMED" ||
+        existingBooking.bookingStatus === "SERVED" ||
+        existingBooking.bookingStatus === "NOT_SERVED" ||
+        existingBooking.bookingStatus === "REFUND_REQUESTED" ||
+        existingBooking.bookingStatus === "REFUNDED"
+      ) {
+        return res.status(400).json({
+          success: false,
+          message: "You have already booked this meal for this date",
+        });
+      }
+
+      // If previous payment is pending/failed, reuse same booking
+      if (
+        existingBooking.paymentStatus === "PENDING_PAYMENT" ||
+        existingBooking.paymentStatus === "FAILED" ||
+        existingBooking.bookingStatus === "PENDING_PAYMENT"
+      ) {
+        existingBooking.paymentStatus = "PENDING_PAYMENT";
+        existingBooking.bookingStatus = "PENDING_PAYMENT";
+        existingBooking.amount = meal.price;
+        existingBooking.mealName = meal.mealName;
+
+        await existingBooking.save();
+
+        return res.status(200).json({
+          success: true,
+          message:
+            "You already have a pending payment booking. Please complete payment.",
+          booking: existingBooking,
+          existingPendingBooking: true,
+        });
+      }
     }
 
     const booking = await Booking.create({
@@ -130,12 +162,14 @@ if (!isBeforeDeadline(bookingDeadline)) {
       success: true,
       message: "Booking created successfully. Please complete payment.",
       booking: populatedBooking,
+      existingPendingBooking: false,
     });
   } catch (error) {
     if (error.code === 11000) {
       return res.status(400).json({
         success: false,
-        message: "Duplicate booking is not allowed",
+        message:
+          "You already have a booking for this meal and date. Please complete payment from My Bookings.",
       });
     }
 
@@ -302,32 +336,29 @@ const cancelBooking = async (req, res) => {
       });
     }
 
-
     const meal = await Meal.findById(booking.meal);
 
-if (!meal) {
-  return res.status(404).json({
-    success: false,
-    message: "Related meal not found",
-  });
-}
+    if (!meal) {
+      return res.status(404).json({
+        success: false,
+        message: "Related meal not found",
+      });
+    }
 
-const cancellationDeadline = getCancellationDeadline(
-  booking.mealDate,
-  meal.startTime,
-  meal.cancellationDeadlineHours
-);
+    const cancellationDeadline = getCancellationDeadline(
+      booking.mealDate,
+      meal.startTime,
+      meal.cancellationDeadlineHours
+    );
 
-if (!isBeforeDeadline(cancellationDeadline)) {
-  return res.status(400).json({
-    success: false,
-    message: `Cancellation deadline passed. Last allowed cancellation time was ${cancellationDeadline.toLocaleString(
-      "en-IN"
-    )}`,
-  });
-}
-
-
+    if (!isBeforeDeadline(cancellationDeadline)) {
+      return res.status(400).json({
+        success: false,
+        message: `Cancellation deadline passed. Last allowed cancellation time was ${cancellationDeadline.toLocaleString(
+          "en-IN"
+        )}`,
+      });
+    }
 
     if (booking.paymentStatus === "PAID") {
       return res.status(400).json({
@@ -411,7 +442,6 @@ const markBookingNotServed = async (req, res) => {
     });
   }
 };
-
 
 module.exports = {
   createBooking,

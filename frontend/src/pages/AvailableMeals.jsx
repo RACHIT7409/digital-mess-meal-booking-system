@@ -55,15 +55,22 @@ const AvailableMeals = () => {
     setLoadingMealId(mealId);
 
     try {
-      await API.post("/bookings", {
-        mealId,
-        mealDate,
-      });
+      const res = await API.post("/bookings", {
+  mealId,
+  mealDate,
+});
 
-      setSuccess("Meal booked successfully. Please complete payment.");
-      setTimeout(() => {
-        navigate("/student/bookings");
-      }, 800);
+if (res.data.existingPendingBooking) {
+  setSuccess(
+    "You already have a pending payment booking. Please complete payment from My Bookings."
+  );
+} else {
+  setSuccess("Meal booked successfully. Please complete payment.");
+}
+
+setTimeout(() => {
+  navigate("/student/bookings");
+}, 800);
     } catch (err) {
       setError(err.response?.data?.message || "Booking failed");
     } finally {

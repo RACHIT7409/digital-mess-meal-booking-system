@@ -106,19 +106,19 @@ const getMyCoupon = async (req, res) => {
     res.status(200).json({
       success: true,
       coupon: {
-  bookingId: booking._id,
-  studentName: booking.student.name,
-  rollNumber: booking.student.rollNumber,
-  hostel: booking.student.hostel,
-  roomNumber: booking.student.roomNumber,
-  mealName: booking.mealName,
-  mealDate: booking.mealDate,
-  amount: booking.amount,
-  paymentStatus: booking.paymentStatus,
-  bookingStatus: booking.bookingStatus,
-  qrCode: booking.qrCode,
-  qrToken: booking.qrToken,
-},
+        bookingId: booking._id,
+        studentName: booking.student.name,
+        rollNumber: booking.student.rollNumber,
+        hostel: booking.student.hostel,
+        roomNumber: booking.student.roomNumber,
+        mealName: booking.mealName,
+        mealDate: booking.mealDate,
+        amount: booking.amount,
+        paymentStatus: booking.paymentStatus,
+        bookingStatus: booking.bookingStatus,
+        qrCode: booking.qrCode,
+        qrToken: booking.qrToken,
+      },
     });
   } catch (error) {
     res.status(500).json({
@@ -128,7 +128,6 @@ const getMyCoupon = async (req, res) => {
     });
   }
 };
-
 
 // Create Razorpay order for a booking
 const createRazorpayOrder = async (req, res) => {
@@ -166,6 +165,21 @@ const createRazorpayOrder = async (req, res) => {
         message: "Payment already completed for this booking",
       });
     }
+
+    // UPDATED: allow payment retry only for pending or failed payments
+    if (
+      booking.paymentStatus !== "PENDING_PAYMENT" &&
+      booking.paymentStatus !== "FAILED"
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Payment is not allowed for this booking",
+      });
+    }
+
+    // UPDATED: if previous attempt failed, reset it to pending before new Razorpay order
+    booking.paymentStatus = "PENDING_PAYMENT";
+    booking.bookingStatus = "PENDING_PAYMENT";
 
     const options = {
       amount: booking.amount * 100, // Razorpay amount is in paise
@@ -211,11 +225,8 @@ const verifyRazorpayPayment = async (req, res) => {
   try {
     const { bookingId } = req.params;
 
-    const {
-      razorpay_order_id,
-      razorpay_payment_id,
-      razorpay_signature,
-    } = req.body;
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
+      req.body;
 
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
       return res.status(400).json({
@@ -257,6 +268,10 @@ const verifyRazorpayPayment = async (req, res) => {
       .digest("hex");
 
     if (expectedSignature !== razorpay_signature) {
+      booking.paymentStatus = "FAILED";
+      booking.bookingStatus = "PENDING_PAYMENT";
+      await booking.save();
+
       return res.status(400).json({
         success: false,
         message: "Invalid Razorpay payment signature",
@@ -288,7 +303,6 @@ const verifyRazorpayPayment = async (req, res) => {
     });
   }
 };
-
 
 module.exports = {
   completeDummyPayment,
