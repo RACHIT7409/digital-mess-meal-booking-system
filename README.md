@@ -23,10 +23,10 @@ A full-stack digital mess coupon booking system designed to help hostel students
 # 🌐 Live Demo
 
 Frontend
-https://your-frontend-vercel-url.vercel.app
+https://digital-mess-meal-booking-system.vercel.app
 
 Backend API
-https://your-backend-render-url.onrender.com
+https://digital-mess-meal-booking-system.onrender.com
 
 ---
 
