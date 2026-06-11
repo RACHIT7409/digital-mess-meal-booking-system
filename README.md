@@ -72,14 +72,6 @@ https://your-backend-render-url.onrender.com
 
 ---
 
-## 📋 My Bookings Page
-
-<p align="center">
-<img src="screenshots/my-bookings.png" width="90%">
-</p>
-
----
-
 ## 🎫 Digital QR Coupon Page
 
 <p align="center">
@@ -112,29 +104,6 @@ https://your-backend-render-url.onrender.com
 
 ---
 
-## 👥 User Management Page
-
-<p align="center">
-<img src="screenshots/user-management.png" width="90%">
-</p>
-
----
-
-## 🍱 Meal Management Page
-
-<p align="center">
-<img src="screenshots/meal-management.png" width="90%">
-</p>
-
----
-
-## 📊 Reports Page
-
-<p align="center">
-<img src="screenshots/reports.png" width="90%">
-</p>
-
----
 
 # ✨ Features
 
@@ -453,7 +422,7 @@ Mess-Coupon-Booking-System
 ## 1️⃣ Clone Repository
 
 ```bash
-git clone https://github.com/your-username/mess-coupon-booking-system.git
+git clone https://github.com/RACHIT7409/digital-mess-meal-booking-system.git
 cd mess-coupon-booking-system
 ```
 
@@ -536,120 +505,6 @@ http://localhost:5173
 
 ---
 
-# 🧾 Database Schema
-
-## User
-
-```text
-name
-email
-password
-role
-rollNumber
-phone
-hostel
-roomNumber
-isActive
-createdAt
-```
-
----
-
-## Meal
-
-```text
-mealName
-price
-startTime
-endTime
-bookingDeadlineHours
-cancellationDeadlineHours
-description
-isAvailable
-createdAt
-```
-
----
-
-## Booking
-
-```text
-student
-meal
-mealName
-mealDate
-amount
-paymentStatus
-bookingStatus
-razorpayOrderId
-razorpayPaymentId
-razorpaySignature
-qrToken
-qrCode
-isServed
-servedAt
-notServedReason
-createdAt
-```
-
----
-
-## Refund
-
-```text
-student
-booking
-amount
-reason
-status
-refundMethod
-razorpayRefundId
-razorpayRefundStatus
-adminRemark
-processedBy
-processedAt
-createdAt
-```
-
----
-
-# 📌 Important Status Values
-
-## Payment Status
-
-```text
-PENDING_PAYMENT
-PAID
-FAILED
-REFUNDED
-```
-
----
-
-## Booking Status
-
-```text
-PENDING_PAYMENT
-CONFIRMED
-SERVED
-NOT_SERVED
-CANCELLED
-REFUND_REQUESTED
-REFUNDED
-```
-
----
-
-## Refund Status
-
-```text
-REQUESTED
-APPROVED
-REJECTED
-COMPLETED
-FAILED
-```
-
 ---
 
 # 🚀 Deployment
@@ -663,7 +518,7 @@ FAILED
 5. Add environment variable:
 
 ```env
-VITE_API_BASE_URL=https://your-render-backend-url.onrender.com/api
+VITE_API_BASE_URL=https://digital-mess-meal-booking-system.onrender.com/api
 ```
 
 6. Deploy
@@ -714,7 +569,7 @@ To reduce cold start delay:
 3. Add backend Render URL:
 
 ```bash
-https://your-render-backend-url.onrender.com
+https://digital-mess-meal-booking-system.onrender.com
 ```
 
 4. Set monitoring interval to 5 minutes
@@ -741,33 +596,6 @@ Use this flow to test the complete project:
 ```
 
 ---
-
-# 🔑 Demo Credentials
-
-Add demo credentials only if you want to show project quickly.
-
-## Student
-
-```text
-Email: student@example.com
-Password: student123
-```
-
-## Manager
-
-```text
-Email: manager@example.com
-Password: manager123
-```
-
-## Admin
-
-```text
-Email: admin@example.com
-Password: admin123
-```
-
-> Do not add real production credentials in a public GitHub repository.
 
 ---
 
