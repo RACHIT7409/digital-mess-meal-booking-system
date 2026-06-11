@@ -1,229 +1,253 @@
-# Mess Coupon Booking System
+# 🍽️ Mess Coupon Booking System
 
-A full-stack **Digital Mess Meal Coupon Booking System** built using the **MERN Stack**.
-This project solves the real-life hostel mess coupon problem by replacing paper coupons with a secure online meal booking, Razorpay payment, QR coupon generation, QR verification, and refund management system.
+<img src="https://img.shields.io/badge/License-MIT-green.svg"/>
+<img src="https://img.shields.io/badge/Frontend-React-blue.svg"/>
+<img src="https://img.shields.io/badge/Backend-Node.js-green.svg"/>
+<img src="https://img.shields.io/badge/Database-MongoDB-brightgreen.svg"/>
+<img src="https://img.shields.io/badge/Payment-Razorpay-blue.svg"/>
 
----
+<p align="center">
 
-## Project Overview
+A full-stack digital mess coupon booking system designed to help hostel students book meals online, pay securely, generate QR coupons, and verify meal entry digitally.
 
-In many college hostels, students collect paper coupons from the mess counter for meals such as breakfast, lunch, snacks, and dinner. This process can create problems like:
+</p>
 
-* Long queues at the mess counter
-* Lost paper coupons
-* Manual payment tracking
-* Students entering without valid coupons
-* Difficulty in handling refunds
-* No proper digital record of bookings and served meals
+<p align="center">
 
-This project provides a digital solution where students can book meals online, pay using Razorpay, receive a QR coupon, and show it at the mess entry. The mess manager can verify the QR coupon and mark the meal as served.
+💻 Built for hostel mess management to replace paper coupons with a secure and modern digital meal booking, payment, QR verification, and refund system.
 
----
-
-## Live Project Links
-
-Frontend Deployment:
-
-```bash
-https://your-vercel-frontend-url.vercel.app
-```
-
-Backend Deployment:
-
-```bash
-https://your-render-backend-url.onrender.com
-```
-
-GitHub Repository:
-
-```bash
-https://github.com/your-username/your-repository-name
-```
+</p>
 
 ---
 
-## Screenshots
+# 🌐 Live Demo
 
-### Home Page
+Frontend
+https://your-frontend-vercel-url.vercel.app
 
-![Home Page](./screenshots/home.png)
-
----
-
-### Login Page
-
-![Login Page](./screenshots/login.png)
+Backend API
+https://your-backend-render-url.onrender.com
 
 ---
 
-### Register Page
+# 📸 Screenshots
 
-![Register Page](./screenshots/register.png)
+## 🏠 Home Page
 
----
-
-### Student Dashboard
-
-![Student Dashboard](./screenshots/student-dashboard.png)
+<p align="center">
+<img src="screenshots/home.png" width="90%">
+</p>
 
 ---
 
-### Book Meal Page
+## 🔐 Login Page
 
-![Book Meal Page](./screenshots/book-meal.png)
-
----
-
-### My Bookings Page
-
-![My Bookings Page](./screenshots/my-bookings.png)
+<p align="center">
+<img src="screenshots/login.png" width="90%">
+</p>
 
 ---
 
-### Digital QR Coupon Page
+## 📝 Register Page
 
-![Digital QR Coupon](./screenshots/coupon.png)
-
----
-
-### Manager Dashboard
-
-![Manager Dashboard](./screenshots/manager-dashboard.png)
+<p align="center">
+<img src="screenshots/register.png" width="90%">
+</p>
 
 ---
 
-### QR Verification Page
+## 🎓 Student Dashboard
 
-![QR Verification](./screenshots/qr-verification.png)
-
----
-
-### Admin Dashboard
-
-![Admin Dashboard](./screenshots/admin-dashboard.png)
+<p align="center">
+<img src="screenshots/student-dashboard.png" width="90%">
+</p>
 
 ---
 
-### Meal Management Page
+## 🍽️ Book Meal Page
 
-![Meal Management](./screenshots/meal-management.png)
-
----
-
-### User Management Page
-
-![User Management](./screenshots/user-management.png)
+<p align="center">
+<img src="screenshots/book-meal.png" width="90%">
+</p>
 
 ---
 
-### Reports Page
+## 📋 My Bookings Page
 
-![Reports Page](./screenshots/reports.png)
-
----
-
-## Main Features
-
-### Student Features
-
-* Student registration and login
-* Role-based secure authentication
-* View available meals
-* Book breakfast, lunch, snacks, and dinner
-* Select meal date
-* Razorpay payment integration
-* Retry payment if payment fails or is incomplete
-* QR coupon generation after successful payment
-* View booking history
-* View digital meal coupon
-* Request refund if meal is not served
-* Update profile details
-* Change password securely
+<p align="center">
+<img src="screenshots/my-bookings.png" width="90%">
+</p>
 
 ---
 
-### Manager Features
+## 🎫 Digital QR Coupon Page
 
-* Manager login
-* View today’s bookings
-* Filter bookings by meal type
-* Verify student QR coupon
-* Manual QR token verification
-* Camera-based QR scanning
-* Mark meal as served
-* Mark booking as not served with reason
-* View refund requests
-* Approve or reject refund requests
+<p align="center">
+<img src="screenshots/coupon.png" width="90%">
+</p>
 
 ---
 
-### Admin Features
+## 🧑‍💼 Manager Dashboard
 
-* Admin login
-* User management
-* Activate or deactivate users
-* Change user roles
-* Create manager/admin staff accounts
-* Create, update, enable, disable, and delete meals
-* Manage meal price and timings
-* View reports
-* View revenue, paid bookings, served meals, and refunds
-* Export reports as CSV
-* Manage system-level data
+<p align="center">
+<img src="screenshots/manager-dashboard.png" width="90%">
+</p>
 
 ---
 
-## Tech Stack
+## 📷 QR Verification Page
 
-### Frontend
+<p align="center">
+<img src="screenshots/qr-verification.png" width="90%">
+</p>
+
+---
+
+## 🛠️ Admin Dashboard
+
+<p align="center">
+<img src="screenshots/admin-dashboard.png" width="90%">
+</p>
+
+---
+
+## 👥 User Management Page
+
+<p align="center">
+<img src="screenshots/user-management.png" width="90%">
+</p>
+
+---
+
+## 🍱 Meal Management Page
+
+<p align="center">
+<img src="screenshots/meal-management.png" width="90%">
+</p>
+
+---
+
+## 📊 Reports Page
+
+<p align="center">
+<img src="screenshots/reports.png" width="90%">
+</p>
+
+---
+
+# ✨ Features
+
+### 🍽️ Digital Meal Booking
+
+Students can book breakfast, lunch, snacks, and dinner online without standing in long queues.
+
+### 💳 Razorpay Payment Integration
+
+Secure Razorpay test payment integration for online meal payment and payment verification.
+
+### 🎫 QR Coupon Generation
+
+After successful payment, a unique QR coupon is generated for the booked meal.
+
+### 📷 QR Coupon Verification
+
+Managers can scan or manually verify QR coupons at the mess entry counter.
+
+### 🔁 Payment Retry System
+
+If payment is failed, cancelled, or interrupted, the student can retry payment from the My Bookings page.
+
+### 🧾 Refund Management
+
+Students can request refunds for paid meals that were not served.
+
+### 🧑‍💼 Manager Panel
+
+Managers can view today’s bookings, verify QR coupons, mark meals as served, and handle refund requests.
+
+### 🛠️ Admin Panel
+
+Admin can manage users, staff accounts, meals, reports, and complete system data.
+
+### 📊 Reports and Revenue Tracking
+
+Admin can view meal-wise and date-wise reports with booking count, served meals, refunds, and revenue.
+
+### 🔐 Authentication System
+
+Secure login and registration using JWT authentication and role-based access control.
+
+---
+
+# 🛠 Tech Stack
+
+## Frontend
+
+<p>
+
+<img src="https://skillicons.dev/icons?i=react,tailwind,vite,javascript" />
+
+</p>
 
 * React.js
 * Vite
 * Tailwind CSS
-* React Router DOM
 * Axios
+* React Router DOM
 * React Icons
 * QR Scanner
 
-### Backend
+---
+
+## Backend
+
+<p>
+
+<img src="https://skillicons.dev/icons?i=nodejs,express,mongodb" />
+
+</p>
 
 * Node.js
 * Express.js
-* MongoDB
+* MongoDB Atlas
 * Mongoose
 * JWT Authentication
 * Bcrypt.js
 * Razorpay API
 * QR Code Generator
-* CORS
-* Dotenv
-
-### Database
-
-* MongoDB Atlas
-
-### Deployment
-
-* Frontend: Vercel
-* Backend: Render
-* Database: MongoDB Atlas
-* Backend keep-alive: UptimeRobot
 
 ---
 
-## System Roles
+## Deployment
 
-The project has three main roles:
+<p>
 
-| Role    | Description                                                         |
-| ------- | ------------------------------------------------------------------- |
-| Student | Books meals, pays online, views QR coupon, requests refund          |
-| Manager | Verifies QR coupons, marks meals as served, manages refund requests |
-| Admin   | Manages users, meals, staff, reports, and system settings           |
+<img src="https://skillicons.dev/icons?i=vercel,github" />
+
+</p>
+
+* Frontend → Vercel
+* Backend → Render
+* Database → MongoDB Atlas
+* Keep Alive Monitor → UptimeRobot
+* Version Control → GitHub
 
 ---
 
-## Meal Booking Flow
+# 👥 User Roles
+
+| Role    | Access                                                           |
+| ------- | ---------------------------------------------------------------- |
+| Student | Book meals, pay online, view QR coupon, request refund           |
+| Manager | View bookings, verify QR, mark served/not served, manage refunds |
+| Admin   | Manage users, staff, meals, reports, and system data             |
+
+---
+
+# 🔄 System Flow
+
+## Student Meal Booking Flow
 
 ```text
 Student Login
@@ -240,117 +264,72 @@ Payment Verified
 ↓
 QR Coupon Generated
 ↓
-Manager Scans QR
+Show QR at Mess Entry
+↓
+Manager Verifies QR
 ↓
 Meal Marked as Served
 ```
 
 ---
 
-## Payment Flow
-
-This project uses Razorpay Test Mode for payment testing.
+## Refund Flow
 
 ```text
-Student creates booking
+Student Requests Refund
 ↓
-Backend creates Razorpay order
+Manager/Admin Reviews Request
 ↓
-Razorpay payment popup opens
+Approve or Reject Refund
 ↓
-Student completes payment
+Refund Status Updated
 ↓
-Backend verifies Razorpay signature
-↓
-Booking becomes CONFIRMED
-↓
-QR coupon is generated
+Student Can Track Refund
 ```
+
+---
+
+# 💳 Payment Handling
+
+This project uses **Razorpay Test Mode** for safe payment testing.
 
 In test mode:
 
 * No real money is deducted
-* No real settlement happens
+* No real money is transferred
+* No settlement happens
 * No transaction charge is applied
-* It is safe for project testing
 
-In production, Razorpay Live Mode can be used after completing Razorpay KYC.
+The system supports payment retry if:
+
+* Student closes Razorpay popup
+* Internet disconnects during payment
+* Payment fails
+* Payment is left incomplete
+
+In such cases, the booking remains in `PENDING_PAYMENT` or `FAILED` status, and the student can retry payment from the My Bookings page.
 
 ---
 
-## QR Coupon Flow
+# 🎫 QR Coupon System
 
 After successful payment, the system generates:
 
 * Unique QR token
 * QR code image
-* Digital coupon details
+* Digital meal coupon
+* Meal details
+* Student details
+* Payment and booking status
 
-The QR coupon contains booking-related secure data and can be verified by the manager.
-
-QR coupon can be used only once. After successful verification, the booking is marked as served.
-
----
-
-## Refund Flow
-
-Refund system handles real-life cases where a student paid but did not receive the meal.
-
-```text
-Student requests refund
-↓
-Manager/Admin reviews request
-↓
-Refund approved or rejected
-↓
-If approved, Razorpay refund/manual refund can be processed
-↓
-Refund status is updated
-```
-
-Refund statuses include:
-
-* REQUESTED
-* APPROVED
-* REJECTED
-* COMPLETED
-* FAILED
+The QR coupon is single-use and can be verified only once by the manager.
 
 ---
 
-## Payment Retry Handling
-
-This project handles failed or incomplete Razorpay payments properly.
-
-If a student:
-
-* Closes Razorpay popup
-* Loses internet during payment
-* Payment fails
-* Does not complete payment
-
-Then the booking remains in:
-
-```text
-PENDING_PAYMENT
-```
-
-or:
-
-```text
-FAILED
-```
-
-The student can go to **My Bookings** and retry payment using the **Pay with Razorpay** button.
-
-The system does not wrongly block the student from completing payment for the same meal and date.
-
----
-
-## Project Folder Structure
+# 📂 Project Structure
 
 ```bash
-Digital Mess Meal Booking System
+Mess-Coupon-Booking-System
 │
 ├── backend
 │   ├── config
@@ -460,8 +439,8 @@ Digital Mess Meal Booking System
 │   ├── manager-dashboard.png
 │   ├── qr-verification.png
 │   ├── admin-dashboard.png
-│   ├── meal-management.png
 │   ├── user-management.png
+│   ├── meal-management.png
 │   └── reports.png
 │
 └── README.md
@@ -469,11 +448,25 @@ Digital Mess Meal Booking System
 
 ---
 
-## Environment Variables
+# ⚙️ Installation & Setup
 
-### Backend `.env`
+## 1️⃣ Clone Repository
 
-Create a `.env` file inside the `backend` folder.
+```bash
+git clone https://github.com/your-username/mess-coupon-booking-system.git
+cd mess-coupon-booking-system
+```
+
+---
+
+## 2️⃣ Backend Setup
+
+```bash
+cd backend
+npm install
+```
+
+### Create `.env` file
 
 ```env
 PORT=5000
@@ -481,7 +474,7 @@ NODE_ENV=development
 
 MONGO_URI=your_mongodb_atlas_connection_string
 
-JWT_SECRET=your_strong_jwt_secret
+JWT_SECRET=your_jwt_secret
 JWT_EXPIRE=7d
 
 FRONTEND_URL=http://localhost:5173
@@ -491,47 +484,9 @@ RAZORPAY_KEY_SECRET=your_razorpay_key_secret
 RAZORPAY_WEBHOOK_SECRET=your_razorpay_webhook_secret
 ```
 
-For production on Render:
-
-```env
-NODE_ENV=production
-FRONTEND_URL=https://your-vercel-frontend-url.vercel.app
-```
-
----
-
-### Frontend `.env`
-
-Create a `.env` file inside the `frontend` folder.
-
-```env
-VITE_API_BASE_URL=http://localhost:5000/api
-```
-
-For production on Vercel:
-
-```env
-VITE_API_BASE_URL=https://your-render-backend-url.onrender.com/api
-```
-
----
-
-## Installation and Setup
-
-### 1. Clone the repository
+### Run Backend
 
 ```bash
-git clone https://github.com/your-username/your-repository-name.git
-cd your-repository-name
-```
-
----
-
-### 2. Backend setup
-
-```bash
-cd backend
-npm install
 npm run dev
 ```
 
@@ -543,13 +498,22 @@ http://localhost:5000
 
 ---
 
-### 3. Frontend setup
-
-Open another terminal:
+## 3️⃣ Frontend Setup
 
 ```bash
 cd frontend
 npm install
+```
+
+### Create `.env` file
+
+```env
+VITE_API_BASE_URL=http://localhost:5000/api
+```
+
+### Run Frontend
+
+```bash
 npm run dev
 ```
 
@@ -561,128 +525,97 @@ http://localhost:5173
 
 ---
 
-## Build Commands
+# 🔐 Authentication Flow
 
-### Frontend build
-
-```bash
-cd frontend
-npm run build
-```
-
-### Backend start
-
-```bash
-cd backend
-npm start
-```
+1. User registers or logs in
+2. Backend verifies credentials
+3. Backend generates JWT token
+4. Token is stored in localStorage
+5. Protected routes require valid token
+6. Role-based access controls student, manager, and admin pages
 
 ---
 
-## API Modules
+# 🧾 Database Schema
 
-The backend contains APIs for:
-
-* Authentication
-* User management
-* Staff creation
-* Meal management
-* Booking management
-* Razorpay payment
-* QR coupon verification
-* Refund management
-* Admin/manager dashboards
-* Reports
-
----
-
-## Authentication and Authorization
-
-The project uses JWT-based authentication.
-
-After login, the backend sends a token to the frontend. The frontend stores the token and sends it with protected API requests.
-
-Role-based access is implemented for:
-
-* Student routes
-* Manager routes
-* Admin routes
-
-Example:
+## User
 
 ```text
-Student cannot access admin dashboard
-Manager cannot access user management
-Admin can manage users and meals
+name
+email
+password
+role
+rollNumber
+phone
+hostel
+roomNumber
+isActive
+createdAt
 ```
 
 ---
 
-## Database Models
+## Meal
 
-### User Model
-
-Stores:
-
-* Name
-* Email
-* Password
-* Role
-* Roll number
-* Hostel
-* Room number
-* Phone
-* Active status
-
-### Meal Model
-
-Stores:
-
-* Meal name
-* Price
-* Start time
-* End time
-* Booking deadline
-* Cancellation deadline
-* Availability status
-* Description
-
-### Booking Model
-
-Stores:
-
-* Student
-* Meal
-* Meal date
-* Amount
-* Payment status
-* Booking status
-* Razorpay order details
-* QR token
-* QR code
-* Served status
-* Not-served reason
-
-### Refund Model
-
-Stores:
-
-* Student
-* Booking
-* Amount
-* Reason
-* Status
-* Refund method
-* Razorpay refund ID
-* Admin/manager remarks
-* Processed by
-* Processed date
+```text
+mealName
+price
+startTime
+endTime
+bookingDeadlineHours
+cancellationDeadlineHours
+description
+isAvailable
+createdAt
+```
 
 ---
 
-## Important Status Values
+## Booking
 
-### Payment Status
+```text
+student
+meal
+mealName
+mealDate
+amount
+paymentStatus
+bookingStatus
+razorpayOrderId
+razorpayPaymentId
+razorpaySignature
+qrToken
+qrCode
+isServed
+servedAt
+notServedReason
+createdAt
+```
+
+---
+
+## Refund
+
+```text
+student
+booking
+amount
+reason
+status
+refundMethod
+razorpayRefundId
+razorpayRefundStatus
+adminRemark
+processedBy
+processedAt
+createdAt
+```
+
+---
+
+# 📌 Important Status Values
+
+## Payment Status
 
 ```text
 PENDING_PAYMENT
@@ -691,7 +624,9 @@ FAILED
 REFUNDED
 ```
 
-### Booking Status
+---
+
+## Booking Status
 
 ```text
 PENDING_PAYMENT
@@ -703,7 +638,9 @@ REFUND_REQUESTED
 REFUNDED
 ```
 
-### Refund Status
+---
+
+## Refund Status
 
 ```text
 REQUESTED
@@ -715,14 +652,14 @@ FAILED
 
 ---
 
-## Production Deployment
+# 🚀 Deployment
 
-### Frontend Deployment on Vercel
+## Frontend Deployment on Vercel
 
-1. Push frontend code to GitHub
+1. Push code to GitHub
 2. Open Vercel
 3. Import GitHub repository
-4. Select frontend as root directory
+4. Select frontend root directory
 5. Add environment variable:
 
 ```env
@@ -733,9 +670,9 @@ VITE_API_BASE_URL=https://your-render-backend-url.onrender.com/api
 
 ---
 
-### Backend Deployment on Render
+## Backend Deployment on Render
 
-1. Push backend code to GitHub
+1. Push code to GitHub
 2. Open Render
 3. Create Web Service
 4. Select backend root directory
@@ -756,182 +693,167 @@ npm start
 
 ---
 
-### MongoDB Atlas Setup
+## MongoDB Atlas Setup
 
-1. Create free MongoDB Atlas cluster
-2. Create database user
-3. Allow network access
-4. Copy connection string
-5. Add connection string to backend `.env`
+1. Create MongoDB Atlas account
+2. Create free cluster
+3. Create database user
+4. Allow network access
+5. Copy MongoDB connection string
+6. Add it to backend `.env`
 
 ---
 
-### UptimeRobot Keep Alive
+## UptimeRobot Keep Alive
 
-Render free backend may sleep after inactivity. To reduce cold start delay:
+Render free backend can sleep after inactivity.
+To reduce cold start delay:
 
 1. Create UptimeRobot account
-2. Add HTTP monitor
+2. Create HTTP monitor
 3. Add backend Render URL:
 
 ```bash
 https://your-render-backend-url.onrender.com
 ```
 
-4. Set interval to 5 minutes
+4. Set monitoring interval to 5 minutes
 5. Keep monitor active
 
 ---
 
-## Razorpay Setup
+# 🧪 Testing Flow
 
-1. Create Razorpay account
-2. Use Test Mode keys for development
-3. Add keys in backend `.env`
-4. Use Razorpay Checkout in frontend
-5. Verify payment signature in backend
-6. Generate QR coupon after successful payment
-
-Test mode does not transfer real money.
-
----
-
-## Security Features
-
-* JWT authentication
-* Role-based route protection
-* Password hashing using bcrypt
-* Secure payment verification using Razorpay signature
-* QR coupon verification
-* Single-use QR coupon
-* Protected admin and manager routes
-* User activation/deactivation
-* Environment variables for secrets
-* CORS configuration
-
----
-
-## Real-Life Use Cases
-
-This project is useful for:
-
-* College hostel mess systems
-* Summer term mess coupon management
-* Paid meal booking systems
-* Student meal tracking
-* Mess entry verification
-* Digital coupon generation
-* Refund management
-
----
-
-## Future Improvements
-
-* Email notifications after booking/payment
-* SMS notification
-* Forgot password feature
-* Meal capacity limit
-* Daily menu image upload
-* Admin analytics charts
-* Monthly revenue reports
-* Student wallet system
-* Bulk student upload by admin
-* Attendance-style meal verification report
-* Progressive Web App support
-
----
-
-## Developer Details
-
-Name:
+Use this flow to test the complete project:
 
 ```text
-RACHIT CHAWLA
-```
-
-Roll Number:
-
-```text
-23UEC598
-```
-
-Email:
-
-```text
-23uec598@lnmiit.ac.in
-```
-
-Contact:
-
-```text
-+91 7409479254
-```
-
-Project:
-
-```text
-Digital Mess Meal Booking System
-```
-
-Institution:
-
-```text
-LNMIIT Jaipur
+1. Register as student
+2. Login as student
+3. View available meals
+4. Book a meal
+5. Pay using Razorpay test mode
+6. View generated QR coupon
+7. Login as manager
+8. Verify QR coupon
+9. Mark meal as served
+10. Login as admin
+11. Check dashboard and reports
 ```
 
 ---
 
-## Demo Credentials
+# 🔑 Demo Credentials
 
-You can add demo credentials here if needed.
+Add demo credentials only if you want to show project quickly.
 
-### Student
+## Student
 
 ```text
 Email: student@example.com
 Password: student123
 ```
 
-### Manager
+## Manager
 
 ```text
 Email: manager@example.com
 Password: manager123
 ```
 
-### Admin
+## Admin
 
 ```text
 Email: admin@example.com
 Password: admin123
 ```
 
-Do not add real production credentials in public GitHub repositories.
+> Do not add real production credentials in a public GitHub repository.
 
 ---
 
-## License
+# 🚀 Future Improvements
 
-This project is created for educational and academic purposes.
+* Email notifications after booking and payment
+* Forgot password feature
+* Meal capacity limit
+* Daily menu image upload
+* Monthly revenue analytics
+* Admin charts and graphs
+* Student wallet system
+* Bulk student upload
+* SMS notification
+* Progressive Web App support
+* Mobile app version
 
 ---
 
-## Project Status
+# 🤝 Contributing
 
-```text
-Completed
+Contributions are welcome.
+
+1. Fork the repository
+2. Create a new branch
+
+```bash
+git checkout -b feature-name
 ```
 
-The system is fully functional with:
+3. Commit your changes
 
-* Authentication
-* Meal booking
-* Razorpay test payment
-* QR coupon generation
-* QR verification
-* Refund management
-* Admin dashboard
-* Manager dashboard
-* Student dashboard
-* Deployment
-* Responsive professional UI
+```bash
+git commit -m "Added new feature"
+```
+
+4. Push to branch
+
+```bash
+git push origin feature-name
+```
+
+5. Open a Pull Request
+
+---
+
+## When You Update Your Code
+
+Use this command sequence to push updated code into GitHub:
+
+```bash
+git add .
+git commit -m "Update project"
+git pull origin main --rebase
+git push origin main
+```
+
+After pushing:
+
+```text
+Frontend auto-updates on Vercel ✅
+Backend auto-updates on Render ✅
+```
+
+---
+
+# 📜 License
+
+This project is licensed under the **MIT License**.
+
+---
+
+# 👨‍💻 Author
+
+**RACHIT CHAWLA**
+
+GitHub
+https://github.com/RACHIT7409
+
+Email
+[23uec598@lnmiit.ac.in](mailto:23uec598@lnmiit.ac.in)
+
+---
+
+# ⭐ Support
+
+If you like this project, please give it a ⭐ on GitHub.
+
+It helps others discover the project.
